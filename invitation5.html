@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation | Dhriti & Hemant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #fdfcf8; /* Creamy white backup */
+            --text-color: #333;
+            --accent-color: #b59410; /* Gold accent */
+            --secondary-text: #666;
+            --heading-font: 'Great Vibes', cursive;
+            --body-font: 'Cormorant Garamond', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--body-font);
+            color: var(--text-color);
+            /* Updated to use your PNG background image across the entire site layout */
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: scroll;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Prevents user scrolling while the initial splash envelope layer is active */
+        body:not(.unlocked) {
+            overflow: hidden;
+        }
+
+        /* --- Splash Screen (Open Invitation Section) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Updated to use the PNG image for the splash screen background */
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1s ease-out, visibility 1s;
+        }
+
+        /* Soft overlay to enhance content legibility on the splash screen cover */
+        #splash-screen::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(253, 252, 248, 0.4);
+            z-index: -1;
+        }
+
+        body.unlocked #splash-screen {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .envelope-icon {
+            font-size: 80px;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .enter-btn {
+            padding: 15px 40px;
+            font-family: var(--body-font);
+            font-size: 1.2rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(181, 148, 16, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .enter-btn:hover {
+            background-color: #967b0d;
+            transform: translateY(-2px);
+        }
+
+        /* --- Main Content Section --- */
+        #main-content {
+            display: none; /* Kept hidden until button is clicked */
+            width: 100%;
+            padding: 60px 20px;
+            box-sizing: border-box;
+        }
+
+        body.unlocked #main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Elegant card container ensuring clean legibility over background.png graphics */
+        .content-wrapper {
+            background: rgba(253, 252, 248, 0.92); 
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            padding: 40px 30px;
+            border-radius: 20px;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(181, 148, 16, 0.2);
+        }
+
+        .names {
+            font-family: var(--heading-font);
+            font-size: 4rem;
+            margin: 15px 0;
+            color: #1a1a1a;
+        }
+
+        .details-section {
+            margin-bottom: 30px;
+            border-top: 1px solid rgba(181, 148, 16, 0.2);
+            border-bottom: 1px solid rgba(181, 148, 16, 0.2);
+            padding: 25px 0;
+        }
+
+        .details-section h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        /* --- Scratch Card Layout --- */
+        .scratch-container {
+            position: relative;
+            width: 280px;
+            height: 90px;
+            margin: 0 auto 10px auto;
+            background: #fff;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .secret-date {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        #scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+        }
+
+        .scratch-instruction {
+            font-style: italic;
+            color: var(--secondary-text);
+            margin-bottom: 30px;
+        }
+
+        /* --- Countdown Segment --- */
+        #countdown-section {
+            display: none; 
+            margin-top: 20px;
+            transition: opacity 1s ease-in;
+            opacity: 0;
+        }
+
+        #countdown-section.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 15px auto 0 auto;
+        }
+
+        .countdown-item {
+            background: white;
+            border: 1px solid #eee;
+            padding: 12px;
+            border-radius: 8px;
+            min-width: 75px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+
+        .time-val {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            display: block;
+        }
+
+        .time-val {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive balancing adjustments for mobile views */
+        @media (max-width: 600px) {
+            #main-content { padding: 30px 15px; }
+            .content-wrapper { padding: 30px 20px; }
+            .names { font-size: 3.2rem; }
+            .secret-date { font-size: 1.6rem; }
+            .countdown-item { min-width: 65px; padding: 8px; }
+            .time-val { font-size: 1.7rem; }
+            .time-label { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: SPLASH SCREEN (Inherits background.png) -->
+    <div id="splash-screen">
+        <div class="envelope-icon">&#128140;</div>
+        <button class="enter-btn" onclick="unlockInvitation()">Open Invitation</button>
+    </div>
+
+    <!-- SCREEN 2: MAIN INVITATION CONTENT (Scrolls down natively side-by-side with background.png) -->
+    <div id="main-content">
+        <div class="content-wrapper">
+            
+            <p style="letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;">We are excited to invite you</p>
+            <h1 class="names">Dhriti & Hemant</h1>
+            <p style="font-size: 1.2rem; font-style: italic; color: var(--secondary-text);">to celebrate our joyous occasion</p>
+
+            <div class="details-section">
+                <h2>The Venue</h2>
+                <p style="font-size: 1.3rem; font-weight: 600;">Stallone Manor Resort Ludhiana</p>
+                <p style="color: var(--secondary-text);">Ludhiana, Punjab</p>
+                <br>
+                <h2>The Time</h2>
+                <p style="font-size: 1.1rem;">Ceremony details to follow</p>
+            </div>
+
+            <!-- SCRATCH SECTION -->
+            <h2 style="font-size: 1.6rem; margin-bottom: 10px;">Scratch to reveal the date:</h2>
+            <div class="scratch-container">
+                <div class="secret-date">11th July 2026</div>
+                <canvas id="scratch-canvas" width="280" height="90"></canvas>
+            </div>
+            <p class="scratch-instruction">(Scratch here)</p>
+
+            <!-- COUNTDOWN SECTION -->
+            <div id="countdown-section">
+                <h3 style="font-size: 1.4rem; color: #1a1a1a;">Countdown to the Big Day</h3>
+                <div class="countdown-container">
+                    <div class="countdown-item">
+                        <span class="time-val" id="days">00</span>
+                        <span class="time-label">Days</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="time-val" id="hours">00</span>
+                        <span class="time-label">Hrs</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="time-val" id="minutes">00</span>
+                        <span class="time-label">Min</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="time-val" id="seconds">00</span>
+                        <span class="time-label">Sec</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // 1. Core Lock / Unlocking Setup
+        document.addEventListener("DOMContentLoaded", () => {
+            // Keep content hidden safely away until transition trigger
+            document.getElementById('main-content').style.display = 'none';
+        });
+
+        function unlockInvitation() {
+            document.body.classList.add('unlocked');
+            document.getElementById('main-content').style.display = 'flex';
+            initScratchCard();
+        }
+
+        // 2. Gold Scratch Card Setup & Logic
+        function initScratchCard() {
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let scratchCompletion = 0;
+
+            // Fills the masking card surface with a rich textured golden hex tone
+            ctx.fillStyle = '#D4AF37'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add clear call-to-action scratch message directly onto gold layer
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 18px Cormorant Garamond';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 4;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('SCRATCH WITH FINGER OR MOUSE', canvas.width / 2, canvas.height / 2);
+
+            // Resetting shadows for standard eraser strokes
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+
+            function scratch(x, y) {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 22, 0, Math.PI * 2);
+                ctx.fill();
+                checkScratchPercentage();
+            }
+
+            function checkScratchPercentage() {
+                if (scratchCompletion >= 40) return; 
+
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const pixels = imageData.data;
+                let transparentPixels = 0;
+
+                for (let i = 0; i < pixels.length; i += 4) {
+                    if (pixels[i + 3] === 0) {
+                        transparentPixels++;
+                    }
+                }
+
+                scratchCompletion = Math.round((transparentPixels / (pixels.length / 4)) * 100);
+
+                if (scratchCompletion >= 40) {
+                    // Reveal the countdown smoothly
+                    const countdownSection = document.getElementById('countdown-section');
+                    countdownSection.classList.add('visible');
+                    
+                    // Fade out remaining canvas masks completely
+                    canvas.style.transition = 'opacity 0.6s ease';
+                    canvas.style.opacity = '0';
+                    setTimeout(() => canvas.style.display = 'none', 600);
+                }
+            }
+
+            function getCoords(e) {
+                const rect = canvas.getBoundingClientRect();
+                if (e.touches && e.touches[0]) {
+                    return {
+                        x: e.touches[0].clientX - rect.left,
+                        y: e.touches[0].clientY - rect.top
+                    };
+                } else {
+                    return {
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top
+                    };
+                }
+            }
+
+            // Canvas Native Window Listeners
+            canvas.addEventListener('mousedown', (e) => { isDrawing = true; const coords = getCoords(e); scratch(coords.x, coords.y); });
+            window.addEventListener('mousemove', (e) => { if (isDrawing) { e.preventDefault(); const coords = getCoords(e); scratch(coords.x, coords.y); } });
+            window.addEventListener('mouseup', () => { isDrawing = false; });
+
+            canvas.addEventListener('touchstart', (e) => { isDrawing = true; const coords = getCoords(e); scratch(coords.x, coords.y); });
+            canvas.addEventListener('touchmove', (e) => { if (isDrawing) { e.preventDefault(); const coords = getCoords(e); scratch(coords.x, coords.y); } }, { passive: false });
+            window.addEventListener('touchend', () => { isDrawing = false; });
+        }
+
+        // 3. Automated Live Countdown Counter
+        const weddingDate = new Date("July 11, 2026 16:00:00").getTime();
+
+        const updateCountdown = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+
+            if (distance < 0) {
+                clearInterval(updateCountdown);
+                document.getElementById("countdown-section").innerHTML = "<h3 style='color: #b59410; margin-top:15px;'>The Celebration Has Begun!</h3>";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
