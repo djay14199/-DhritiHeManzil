@@ -2,435 +2,603 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wedding Invitation | Dhriti & Hemant</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <!-- Premium Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --bg-color: #fdfcf8; /* Creamy white backup */
-            --text-color: #333;
-            --accent-color: #b59410; /* Gold accent */
-            --secondary-text: #666;
-            --heading-font: 'Great Vibes', cursive;
-            --body-font: 'Cormorant Garamond', serif;
-        }
-
+        /* --- CORE RULES & DESKTOP RESPONSIVE BOUNDARIES --- */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body, html {
+            width: 100%;
+            background-color: #1a1112; /* Rich dark background for desktop framing */
+            color: #333;
+            scroll-behavior: smooth;
+            display: flex;
+            justify-content: center;
         }
 
-        body {
-            font-family: var(--body-font);
-            color: var(--text-color);
-            /* Updated to use your PNG background image across the entire site layout */
-            background-image: url('background.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: scroll;
+        /* Essential device boundary container to protect mobile formatting on PC monitors */
+        .phone-wrapper {
+            width: 100%;
+            max-width: 450px; /* Emulates smartphone proportions perfectly */
+            background-color: #faf6f0;
             min-height: 100vh;
-            overflow-x: hidden;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.6);
         }
 
-        /* Prevents user scrolling while the initial splash envelope layer is active */
-        body:not(.unlocked) {
-            overflow: hidden;
-        }
-
-        /* --- Splash Screen (Open Invitation Section) --- */
-        #splash-screen {
+        /* --- PRE-LOADER SPLASH GATE --- */
+        #gate-container {
             position: fixed;
             top: 0;
-            left: 0;
             width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            z-index: 9999;
+            perspective: 1500px;
+            overflow: hidden;
+            background: #faf6f0;
+            transition: visibility 1.5s;
+        }
+
+        .gate-header-text {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #8a1426;
+            letter-spacing: 4px;
+            text-align: center;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.15);
+            pointer-events: none;
+            width: 100%;
+            animation: softPulse 2.5s infinite alternate;
+        }
+
+        .door-half {
+            position: absolute;
+            top: 0;
+            width: 50%;
             height: 100%;
-            /* Updated to use the PNG image for the splash screen background */
-            background-image: url('background.png');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
+            background-image: url('Door.png');
+            background-size: 200% 100%;
+            background-repeat: no-repeat;
+            transition: transform 1.8s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        .door-left { left: 0; background-position: left center; transform-origin: left center; }
+        .door-right { right: 0; background-position: right center; transform-origin: right center; }
+
+        .unlock-assembly {
+            position: absolute;
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            text-align: center;
+            width: 100%;
+            transition: opacity 0.5s ease;
+        }
+
+        .heart-btn {
+            width: 72px;
+            height: 72px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: inline-flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            transition: opacity 1s ease-out, visibility 1s;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            border: none;
+            animation: heartbeat 1.6s infinite;
         }
 
-        /* Soft overlay to enhance content legibility on the splash screen cover */
-        #splash-screen::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(253, 252, 248, 0.4);
-            z-index: -1;
+        .heart-btn svg { width: 36px; height: 36px; fill: #c92a3b; }
+
+        .tap-instruction {
+            margin-top: 15px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            color: #fff;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 8px rgba(0,0,0,1), 0px 0px 4px #000;
+            text-transform: uppercase;
+            font-weight: 600;
         }
 
-        body.unlocked #splash-screen {
+        .gate-opened .door-left { transform: rotateY(-110deg); }
+        .gate-opened .door-right { transform: rotateY(110deg); }
+        .gate-opened .unlock-assembly, .gate-opened .gate-header-text { opacity: 0; pointer-events: none; }
+
+        /* --- CONTENT MAIN WRAPPER --- */
+        #main-content {
             opacity: 0;
             visibility: hidden;
-            pointer-events: none;
-        }
-
-        .envelope-icon {
-            font-size: 80px;
-            color: var(--accent-color);
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .enter-btn {
-            padding: 15px 40px;
-            font-family: var(--body-font);
-            font-size: 1.2rem;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(181, 148, 16, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .enter-btn:hover {
-            background-color: #967b0d;
-            transform: translateY(-2px);
-        }
-
-        /* --- Main Content Section --- */
-        #main-content {
-            display: none; /* Kept hidden until button is clicked */
             width: 100%;
-            padding: 60px 20px;
-            box-sizing: border-box;
+            transition: opacity 1s ease-in 0.5s;
         }
 
-        body.unlocked #main-content {
+        .content-active #main-content { opacity: 1; visibility: visible; }
+
+        .invitation-section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            overflow: hidden;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
         }
 
-        /* Elegant card container ensuring clean legibility over background.png graphics */
-        .content-wrapper {
-            background: rgba(253, 252, 248, 0.92); 
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
-            padding: 40px 30px;
-            border-radius: 20px;
-            max-width: 550px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.1);
-            border: 1px solid rgba(181, 148, 16, 0.2);
+        /* --- SECTION 1: CODE TEXT OVERLAY (PAGE 1) --- */
+        #section-page1 {
+            background-image: url('page 1.png');
+            padding-top: 13%;
         }
 
-        .names {
-            font-family: var(--heading-font);
-            font-size: 4rem;
-            margin: 15px 0;
-            color: #1a1a1a;
-        }
+        /* Hides old card details cleanly */
+        .mask-p1-parents { position: absolute; top: 11%; width: 75%; height: 6%; background: #ebf3e7; }
+        .mask-p1-names { position: absolute; top: 21%; width: 75%; height: 18%; background: #ebf3e7; }
+        .mask-p1-details { position: absolute; top: 41%; width: 75%; height: 16%; background: #ebf3e7; }
+        .mask-p1-fire { position: absolute; bottom: 12%; width: 25%; height: 12%; background: #ebf3e7; }
 
-        .details-section {
-            margin-bottom: 30px;
-            border-top: 1px solid rgba(181, 148, 16, 0.2);
-            border-bottom: 1px solid rgba(181, 148, 16, 0.2);
-            padding: 25px 0;
-        }
-
-        .details-section h2 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: var(--accent-color);
-        }
-
-        /* --- Scratch Card Layout --- */
-        .scratch-container {
+        /* Animated Custom Typography Overlays */
+        .p1-text-parents {
             position: relative;
-            width: 280px;
-            height: 90px;
-            margin: 0 auto 10px auto;
-            background: #fff;
-            border: 2px solid #eee;
-            border-radius: 10px;
-            display: flex;
+            z-index: 5;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.78rem;
+            color: #4a5d4e;
+            text-align: center;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+            margin-top: 12px;
+        }
+
+        .p1-text-names {
+            position: relative;
+            z-index: 5;
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: #8a1426;
+            text-align: center;
+            margin-top: 9%;
+            line-height: 1.2;
+        }
+
+        .p1-text-details {
+            position: relative;
+            z-index: 5;
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            margin-top: 11%;
+            color: #2b3a2f;
+        }
+        .p1-text-details h3 { font-size: 1rem; letter-spacing: 2px; color: #8a1426; margin-bottom: 5px;}
+        .p1-text-details p { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; letter-spacing: 1px; font-weight: 600;}
+
+        /* Repositioned Dynamic Fire Layer */
+        .fire-animator-overlay {
+            position: absolute;
+            bottom: 14%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            pointer-events: none;
+            mix-blend-mode: multiply; /* Blends flawlessly into pastel card stock */
+            opacity: 0.9;
+            z-index: 6;
+        }
+
+        /* --- SECTION 2: SCRATCH CARD & TIMER --- */
+        #section-scratch {
+            background: linear-gradient(135deg, #fffcf7 0%, #f3ebdf 100%);
+            text-align: center;
             justify-content: center;
-            align-items: center;
-            user-select: none;
+            padding: 40px 20px;
+            border-bottom: 2px dashed #e2d1ba;
+        }
+
+        .announcement-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.3rem;
+            color: #8a1426;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .scratch-wrapper {
+            position: relative;
+            width: 320px;
+            height: 150px;
+            margin: 10px auto;
+            box-shadow: 0 10px 30px rgba(138,20,38,0.15);
+            border-radius: 12px;
             overflow: hidden;
         }
 
-        .secret-date {
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        #scratch-canvas {
+        .scratch-underlayer {
             position: absolute;
-            top: 0;
-            left: 0;
-            cursor: crosshair;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background-color: #fff9f0; border: 3px double #d4af37; border-radius: 12px;
         }
 
-        .scratch-instruction {
-            font-style: italic;
-            color: var(--secondary-text);
-            margin-bottom: 30px;
+        .revealed-date { font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700; color: #8a1426; letter-spacing: 1px; }
+        .revealed-year { font-family: 'Montserrat', sans-serif; font-size: 1rem; letter-spacing: 4px; color: #d4af37; margin-top: 5px; font-weight: 600; }
+        #scratch-canvas { position: absolute; top: 0; left: 0; z-index: 5; cursor: pointer; touch-action: none; }
+
+        #countdown-container { margin-top: 30px; display: flex; gap: 12px; justify-content: center; opacity: 0; transform: translateY(20px); transition: all 1s ease; }
+        #countdown-container.visible { opacity: 1; transform: translateY(0); }
+        .timer-box { background: #8a1426; color: #fff; min-width: 65px; padding: 10px 6px; border-radius: 8px; }
+        .timer-val { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: bold; display: block; }
+        .timer-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+
+        /* --- SECTION 3: HALDI OVERLAY --- */
+        #section-haldi {
+            background-image: url('Haldi.png');
+            justify-content: flex-start;
+            padding-top: 25%;
         }
 
-        /* --- Countdown Segment --- */
-        #countdown-section {
-            display: none; 
-            margin-top: 20px;
-            transition: opacity 1s ease-in;
-            opacity: 0;
+        /* Hides old layout text details cleanly */
+        .mask-haldi-names { position: absolute; top: 32%; width: 80%; height: 15%; background: #ffffff; }
+        
+        .haldi-text-names {
+            position: relative;
+            z-index: 5;
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: #e03a53;
+            text-align: center;
+            margin-top: 15%;
+            width: 100%;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
         }
 
-        #countdown-section.visible {
-            display: block;
-            opacity: 1;
+        .bell-animation-overlay { position: absolute; top: 5%; width: 45px; height: 60px; pointer-events: none; transform-origin: top center; z-index: 10;}
+        .bell-left { left: 9%; animation: bellSwayLeft 3s infinite ease-in-out; }
+        .bell-right { right: 9%; animation: bellSwayRight 2.8s infinite ease-in-out; }
+
+        /* --- SECTION 4: PLACARDS & FAMILIES --- */
+        #section-families {
+            background: linear-gradient(to bottom, #fdfbf7, #f5efe4);
+            padding: 50px 20px;
+            align-items: center;
         }
 
-        .countdown-container {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 15px auto 0 auto;
-        }
-
-        .countdown-item {
-            background: white;
-            border: 1px solid #eee;
-            padding: 12px;
+        .presence-placard {
+            background: linear-gradient(135deg, #b76e79 0%, #8a4f58 100%); /* Rose Gold Base */
+            border: 2px solid #f7d6c8;
+            padding: 22px 15px;
+            width: 90%;
+            text-align: center;
             border-radius: 8px;
-            min-width: 75px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            box-shadow: 0 12px 30px rgba(183,110,121,0.25);
+            margin-bottom: 40px;
         }
 
-        .time-val {
-            font-size: 2.2rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            display: block;
+        .presence-text { font-family: 'Cinzel', serif; font-size: 1.1rem; color: #fcf3b8; letter-spacing: 2px; text-transform: uppercase; }
+        .family-signpost { font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.2rem; color: #8a1426; margin-bottom: 25px; text-align: center; }
+        .family-signpost span { font-family: 'Montserrat', sans-serif; font-style: normal; font-size: 0.95rem; display: block; text-transform: uppercase; letter-spacing: 3px; color: #666; margin-bottom: 5px;}
+
+        .family-card {
+            background: #ffffff;
+            border-left: 4px solid #8a1426;
+            box-shadow: 0 6px 18px rgba(138,20,38,0.05);
+            width: 90%;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
         }
 
-        .time-val {
-            font-size: 2.2rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            display: block;
+        .family-title { font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700; color: #8a1426; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid #f5efe4; padding-bottom: 5px; text-transform: uppercase;}
+        .family-member { font-size: 1rem; color: #4a4a4a; line-height: 1.7; font-weight: 400; }
+
+        /* --- SECTION 5: MAP INTERACTION --- */
+        #section-map { background: #fff; text-align: center; padding: 50px 20px; }
+        .map-icon { color: #8a1426; animation: bounce 2s infinite; margin-bottom: 8px; }
+        .map-title { font-family: 'Cinzel', serif; font-size: 1.3rem; color: #8a1426; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+        .venue-name { font-size: 1rem; color: #d4af37; font-weight: 600; margin-bottom: 20px; font-family: 'Cinzel', serif; letter-spacing: 1px; }
+        
+        .map-embed-wrapper {
+            width: 100%; height: 200px; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 3px solid #fff; outline: 1px solid #e0d5c1; margin-bottom: 20px;
+        }
+        .static-map-trigger { width: 100%; height: 100%; display: flex; background: #e5e3df; }
+        .directions-btn {
+            display: inline-flex; align-items: center; background: #8a1426; color: #ffffff; text-decoration: none;
+            padding: 12px 35px; border-radius: 30px; font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
         }
 
-        .time-label {
-            font-size: 0.9rem;
-            color: var(--secondary-text);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        /* --- FOOTER COMPONENT --- */
+        footer { background: #140d0e; color: #fff; text-align: center; padding: 40px 20px; }
+        .footer-names { font-family: 'Great Vibes', cursive; font-size: 2.3rem; color: #e5c1a7; margin-bottom: 5px; }
+        .hashtag { font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 2px; color: #d4af37; font-weight: 500; }
 
-        /* Responsive balancing adjustments for mobile views */
-        @media (max-width: 600px) {
-            #main-content { padding: 30px 15px; }
-            .content-wrapper { padding: 30px 20px; }
-            .names { font-size: 3.2rem; }
-            .secret-date { font-size: 1.6rem; }
-            .countdown-item { min-width: 65px; padding: 8px; }
-            .time-val { font-size: 1.7rem; }
-            .time-label { font-size: 0.75rem; }
+        /* --- VIDEO-STYLE SCROLL REVEAL ANIMATIONS --- */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.4s cubic-bezier(0.215, 0.61, 0.355, 1), transform 1.4s cubic-bezier(0.215, 0.61, 0.355, 1);
         }
+        .scroll-reveal.revealed { opacity: 1; transform: translateY(0); }
+
+        /* Sequence timing delays for text lines on loading elements */
+        .delay-1 { transition-delay: 0.3s; }
+        .delay-2 { transition-delay: 0.7s; }
+        .delay-3 { transition-delay: 1.1s; }
+
+        /* --- BASE KEYFRAMES --- */
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.08); } 40% { transform: scale(1); } 60% { transform: scale(1.12); } }
+        @keyframes softPulse { 0% { opacity: 0.85; transform: translateX(-50%) scale(0.97); } 100% { opacity: 1; transform: translateX(-50%) scale(1.03); } }
+        @keyframes bellSwayLeft { 0%, 100% { transform: rotate(7deg); } 50% { transform: rotate(-7deg); } }
+        @keyframes bellSwayRight { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(9deg); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } 60% { transform: translateY(-4px); } }
     </style>
 </head>
 <body>
 
-    <!-- SCREEN 1: SPLASH SCREEN (Inherits background.png) -->
-    <div id="splash-screen">
-        <div class="envelope-icon">&#128140;</div>
-        <button class="enter-btn" onclick="unlockInvitation()">Open Invitation</button>
-    </div>
+    <!-- DEVICE CONTAINER WRAPPER -->
+    <div class="phone-wrapper">
 
-    <!-- SCREEN 2: MAIN INVITATION CONTENT (Scrolls down natively side-by-side with background.png) -->
-    <div id="main-content">
-        <div class="content-wrapper">
+        <!-- INTERACTIVE DOOR SPLASH ENVELOPE -->
+        <div id="gate-container">
+            <div class="gate-header-text">YOU'RE INVITED</div>
+            <div class="door-half door-left"></div>
+            <div class="door-half door-right"></div>
             
-            <p style="letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;">We are excited to invite you</p>
-            <h1 class="names">Dhriti & Hemant</h1>
-            <p style="font-size: 1.2rem; font-style: italic; color: var(--secondary-text);">to celebrate our joyous occasion</p>
-
-            <div class="details-section">
-                <h2>The Venue</h2>
-                <p style="font-size: 1.3rem; font-weight: 600;">Stallone Manor Resort Ludhiana</p>
-                <p style="color: var(--secondary-text);">Ludhiana, Punjab</p>
-                <br>
-                <h2>The Time</h2>
-                <p style="font-size: 1.1rem;">Ceremony details to follow</p>
+            <div class="unlock-assembly">
+                <button class="heart-btn" onclick="openInvitation()" aria-label="Open Invitation">
+                    <svg viewBox="0 0 32 32"><path d="M16 28.5s-12-7.31-12-14.5C4 9.13 7.82 5 12.5 5c2.9 0 5.48 1.57 6.94 4 1.46-2.43 4.04-4 6.94-4C30.93 5 34 9.13 34 14c0 7.19-12 14.5-12 14.5z"/></svg>
+                </button>
+                <div class="tap-instruction">Tap to open your invitation</div>
             </div>
+        </div>
 
-            <!-- SCRATCH SECTION -->
-            <h2 style="font-size: 1.6rem; margin-bottom: 10px;">Scratch to reveal the date:</h2>
-            <div class="scratch-container">
-                <div class="secret-date">11th July 2026</div>
-                <canvas id="scratch-canvas" width="280" height="90"></canvas>
-            </div>
-            <p class="scratch-instruction">(Scratch here)</p>
+        <!-- MAIN SCROLLABLE CONTINUOUS INVITATION TEXTURED PAGES -->
+        <div id="main-content">
+            
+            <!-- SECTION 1: AUSPICIOUS WEDDING PAGE -->
+            <section class="invitation-section" id="section-page1">
+                <!-- Clean Color Blocker Overlays covering native static card text -->
+                <div class="mask-p1-parents"></div>
+                <div class="mask-p1-names"></div>
+                <div class="mask-p1-details"></div>
+                <div class="mask-p1-fire"></div>
 
-            <!-- COUNTDOWN SECTION -->
-            <div id="countdown-section">
-                <h3 style="font-size: 1.4rem; color: #1a1a1a;">Countdown to the Big Day</h3>
-                <div class="countdown-container">
-                    <div class="countdown-item">
-                        <span class="time-val" id="days">00</span>
-                        <span class="time-label">Days</span>
-                    </div>
-                    <div class="countdown-item">
-                        <span class="time-val" id="hours">00</span>
-                        <span class="time-label">Hrs</span>
-                    </div>
-                    <div class="countdown-item">
-                        <span class="time-val" id="minutes">00</span>
-                        <span class="time-label">Min</span>
-                    </div>
-                    <div class="countdown-item">
-                        <span class="time-val" id="seconds">00</span>
-                        <span class="time-label">Sec</span>
-                    </div>
+                <!-- Cinematic Dynamic Fluid Text Layout Engine -->
+                <div class="p1-text-parents scroll-reveal delay-1">
+                    With the blessings of Lord Ganesha<br>
+                    <strong>Mrs. Preeti Jain & Mr. Dheeraj Jain</strong><br>
+                    cordially invite you to the auspicious wedding of their children
                 </div>
-            </div>
-            
+
+                <div class="p1-text-names scroll-reveal delay-2">
+                    Dhriti <br><span style="font-family:'Playfair Display'; font-style:italic; font-size:1.8rem; color:#666;">weds</span><br> Hemant
+                </div>
+
+                <div class="p1-text-details scroll-reveal delay-3">
+                    <h3>WEDDING</h3>
+                    <p>Nirvana, Ludhiana</p>
+                    <p style="color:#d4af37; margin-top:4px;">9:00 PM Onwards</p>
+                </div>
+
+                <!-- Programmatic Smooth Floating Flame System Layer -->
+                <div class="fire-animator-overlay">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <path d="M50,90 Q35,60 50,20 Q65,60 50,90 Z" fill="#ff6200">
+                            <animate attributeName="d" dur="1.2s" repeatCount="indefinite"
+                                values="M50,90 Q35,60 50,20 Q65,60 50,90 Z;
+                                        M50,90 Q28,55 50,12 Q72,55 50,90 Z;
+                                        M50,90 Q35,60 50,20 Q65,60 50,90 Z" />
+                            <animate attributeName="fill" dur="1.8s" repeatCount="indefinite" values="#ff6200;#ff3300;#ff9900;#ff6200"/>
+                        </path>
+                        <path d="M50,85 Q41,65 50,38 Q59,65 50,85 Z" fill="#ffcc00">
+                            <animate attributeName="d" dur="0.9s" repeatCount="indefinite"
+                                values="M50,85 Q41,65 50,38 Q59,65 50,85 Z;
+                                        M50,85 Q33,62 50,28 Q67,62 50,85 Z;
+                                        M50,85 Q41,65 50,38 Q59,65 50,85 Z" />
+                        </path>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- SECTION 2: GLITTER SCRATCH COATING REVEAL & COUNTDOWN -->
+            <section class="invitation-section" id="section-scratch">
+                <div class="announcement-text scroll-reveal">With immense joy and love<br>Dhriti & Hemant</div>
+                
+                <div class="scratch-wrapper scroll-reveal">
+                    <div class="scratch-underlayer">
+                        <div class="revealed-date">11TH JULY</div>
+                        <div class="revealed-year">2026</div>
+                    </div>
+                    <canvas id="scratch-canvas" width="320" height="150"></canvas>
+                </div>
+                
+                <div id="countdown-container">
+                    <div class="timer-box"><span class="timer-val" id="days">00</span><span class="timer-label">Days</span></div>
+                    <div class="timer-box"><span class="timer-val" id="hours">00</span><span class="timer-label">Hrs</span></div>
+                    <div class="timer-box"><span class="timer-val" id="minutes">00</span><span class="timer-label">Min</span></div>
+                    <div class="timer-box"><span class="timer-val" id="seconds">00</span><span class="timer-label">Sec</span></div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: CELEBRATORY HALDI PAGE -->
+            <section class="invitation-section" id="section-haldi">
+                <div class="mask-haldi-names"></div>
+                
+                <!-- Code text animation replacement overlay -->
+                <div class="haldi-text-names scroll-reveal">Dhriti & Hemant</div>
+
+                <!-- Animated Interactive Swing Hanging Bells -->
+                <div class="bell-animation-overlay bell-left">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M50,15 L50,30 M30,70 C30,40 70,40 70,70 L25,70 L30,70 Z" fill="#d4af37" stroke="#9e7d11" stroke-width="1.5"/><circle cx="50" cy="75" r="5" fill="#8a1426" /></svg>
+                </div>
+                <div class="bell-animation-overlay bell-right">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M50,15 L50,30 M30,70 C30,40 70,40 70,70 L25,70 L30,70 Z" fill="#d4af37" stroke="#9e7d11" stroke-width="1.5"/><circle cx="48" cy="75" r="5" fill="#8a1426" /></svg>
+                </div>
+            </section>
+
+            <!-- SECTION 4: PLACARDS DIRECTORY -->
+            <section class="invitation-section" id="section-families">
+                <div class="presence-placard scroll-reveal">
+                    <div class="presence-text">Awaiting your noble presence</div>
+                </div>
+                
+                <div class="family-signpost scroll-reveal"><span>With Love,</span>The Families</div>
+                
+                <div class="family-card scroll-reveal">
+                    <div class="family-title">Groom's Family</div>
+                    <div class="family-member"><strong>Mrs. Preeti Jain</strong></div>
+                    <div class="family-member">Mr. Puneet Jain</div>
+                </div>
+                
+                <div class="family-card scroll-reveal">
+                    <div class="family-title">Bride's Family</div>
+                    <div class="family-member"><strong>Mrs. Preeti Jain</strong></div>
+                    <div class="family-member">Mr. Dheeraj Jain</div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: ROUTING SCHEMATIC & MAP DIRECTIONS LINK -->
+            <section class="invitation-section" id="section-map">
+                <div class="map-icon scroll-reveal">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                </div>
+                <div class="map-title scroll-reveal">Where we celebrate</div>
+                <div class="venue-name scroll-reveal">Stallone Manor Resort, Ludhiana</div>
+                
+                <div class="map-embed-wrapper scroll-reveal">
+                    <a href="https://www.google.com/maps/dir//Stallone+Manor+Resort,+Pakhowal+Rd,+Thakkarwal,+Ludhiana,+Punjab+142022/@28.6425088,77.2964352,13z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a81e54b544107:0xd5cfb4a61b21e00f!2m2!1d75.795248!2d30.8496305?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D" class="static-map-trigger" target="_blank">
+                        <svg width="100%" height="100%" viewBox="0 0 300 200" style="background:#e4e2de;">
+                            <path d="M0,40 L300,70 M0,150 L300,120 M100,0 L120,200 M220,0 L180,200" stroke="#fff" stroke-width="7" fill="none"/>
+                            <path d="M0,40 L300,70 M0,150 L300,120 M100,0 L120,200 M220,0 L180,200" stroke="#cdca97" stroke-width="1.5" fill="none"/>
+                            <circle cx="150" cy="95" r="40" fill="#8a1426" fill-opacity="0.12" stroke="#8a1426" stroke-width="1" stroke-dasharray="4,4"/>
+                            <path d="M150,78 C143,78 137,84 137,91 C137,100 150,112 150,112 C150,112 163,100 163,91 C163,84 157,78 150,78 Z" fill="#8a1426"/>
+                            <circle cx="150" cy="89" r="3.5" fill="#fff"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <a href="https://www.google.com/maps/dir//Stallone+Manor+Resort,+Pakhowal+Rd,+Thakkarwal,+Ludhiana,+Punjab+142022/@28.6425088,77.2964352,13z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a81e54b544107:0xd5cfb4a61b21e00f!2m2!1d75.795248!2d30.8496305?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D" class="directions-btn scroll-reveal" target="_blank">
+                    Get Directions
+                </a>
+            </section>
+
+            <!-- FOOTER IDENTITY AND BRAND METADATA -->
+            <footer>
+                <div class="footer-names">Dhriti & Hemant ❤️✨</div>
+                <div class="hashtag">#DhritiHeManzil</div>
+            </footer>
+
         </div>
     </div>
 
+    <!-- MAIN OPERATIONAL ENGINE -->
     <script>
-        // 1. Core Lock / Unlocking Setup
-        document.addEventListener("DOMContentLoaded", () => {
-            // Keep content hidden safely away until transition trigger
-            document.getElementById('main-content').style.display = 'none';
-        });
-
-        function unlockInvitation() {
-            document.body.classList.add('unlocked');
-            document.getElementById('main-content').style.display = 'flex';
-            initScratchCard();
+        function openInvitation() {
+            const container = document.getElementById('gate-container');
+            container.classList.add('gate-opened');
+            document.body.classList.add('content-active');
+            
+            setTimeout(() => {
+                container.style.display = 'none';
+                handleScrollReveal();
+            }, 1800);
         }
 
-        // 2. Gold Scratch Card Setup & Logic
-        function initScratchCard() {
-            const canvas = document.getElementById('scratch-canvas');
-            const ctx = canvas.getContext('2d');
-            let isDrawing = false;
-            let scratchCompletion = 0;
+        const canvas = document.getElementById('scratch-canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let scratchCounted = false;
 
-            // Fills the masking card surface with a rich textured golden hex tone
-            ctx.fillStyle = '#D4AF37'; 
+        function initScratchCanvas() {
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, '#bf953f'); grad.addColorStop(0.25, '#fcf6ba'); grad.addColorStop(0.5, '#b38728'); grad.addColorStop(0.75, '#fbf5b7'); grad.addColorStop(1, '#aa771c');
+            
+            ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Add clear call-to-action scratch message directly onto gold layer
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = 'bold 18px Cormorant Garamond';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-            ctx.shadowBlur = 4;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('SCRATCH WITH FINGER OR MOUSE', canvas.width / 2, canvas.height / 2);
-
-            // Resetting shadows for standard eraser strokes
-            ctx.shadowColor = 'transparent';
-            ctx.shadowBlur = 0;
-
-            function scratch(x, y) {
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.beginPath();
-                ctx.arc(x, y, 22, 0, Math.PI * 2);
-                ctx.fill();
-                checkScratchPercentage();
-            }
-
-            function checkScratchPercentage() {
-                if (scratchCompletion >= 40) return; 
-
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const pixels = imageData.data;
-                let transparentPixels = 0;
-
-                for (let i = 0; i < pixels.length; i += 4) {
-                    if (pixels[i + 3] === 0) {
-                        transparentPixels++;
-                    }
-                }
-
-                scratchCompletion = Math.round((transparentPixels / (pixels.length / 4)) * 100);
-
-                if (scratchCompletion >= 40) {
-                    // Reveal the countdown smoothly
-                    const countdownSection = document.getElementById('countdown-section');
-                    countdownSection.classList.add('visible');
-                    
-                    // Fade out remaining canvas masks completely
-                    canvas.style.transition = 'opacity 0.6s ease';
-                    canvas.style.opacity = '0';
-                    setTimeout(() => canvas.style.display = 'none', 600);
-                }
-            }
-
-            function getCoords(e) {
-                const rect = canvas.getBoundingClientRect();
-                if (e.touches && e.touches[0]) {
-                    return {
-                        x: e.touches[0].clientX - rect.left,
-                        y: e.touches[0].clientY - rect.top
-                    };
-                } else {
-                    return {
-                        x: e.clientX - rect.left,
-                        y: e.clientY - rect.top
-                    };
-                }
-            }
-
-            // Canvas Native Window Listeners
-            canvas.addEventListener('mousedown', (e) => { isDrawing = true; const coords = getCoords(e); scratch(coords.x, coords.y); });
-            window.addEventListener('mousemove', (e) => { if (isDrawing) { e.preventDefault(); const coords = getCoords(e); scratch(coords.x, coords.y); } });
-            window.addEventListener('mouseup', () => { isDrawing = false; });
-
-            canvas.addEventListener('touchstart', (e) => { isDrawing = true; const coords = getCoords(e); scratch(coords.x, coords.y); });
-            canvas.addEventListener('touchmove', (e) => { if (isDrawing) { e.preventDefault(); const coords = getCoords(e); scratch(coords.x, coords.y); } }, { passive: false });
-            window.addEventListener('touchend', () => { isDrawing = false; });
+            ctx.font = "bold 13px 'Cinzel', serif"; ctx.fillStyle = "#5c4314"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.fillText("SCRATCH HERE TO REVEAL DATE", canvas.width / 2, canvas.height / 2);
         }
 
-        // 3. Automated Live Countdown Counter
-        const weddingDate = new Date("July 11, 2026 16:00:00").getTime();
+        function scratch(x, y) {
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath(); ctx.arc(x, y, 22, 0, Math.PI * 2); ctx.fill();
+            if (!scratchCounted) checkScratchPercentage();
+        }
 
-        const updateCountdown = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = weddingDate - now;
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = days.toString().padStart(2, '0');
-            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
-            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
-            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
-
-            if (distance < 0) {
-                clearInterval(updateCountdown);
-                document.getElementById("countdown-section").innerHTML = "<h3 style='color: #b59410; margin-top:15px;'>The Celebration Has Begun!</h3>";
+        function checkScratchPercentage() {
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imgData.data; let cleared = 0;
+            for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) cleared++; }
+            if (cleared / (pixels.length / 4) > 0.45) {
+                scratchCounted = true;
+                canvas.style.transition = "opacity 0.8s ease"; canvas.style.opacity = 0;
+                setTimeout(() => canvas.remove(), 800);
+                document.getElementById('countdown-container').classList.add('visible');
             }
-        }, 1000);
+        }
+
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e.offsetX, e.offsetY); });
+        canvas.addEventListener('mousemove', (e) => { if (isDrawing) scratch(e.offsetX, e.offsetY); });
+        window.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; const rect = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top); });
+        canvas.addEventListener('touchmove', (e) => { if (!isDrawing) return; e.preventDefault(); const rect = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top); });
+        window.addEventListener('touchend', () => isDrawing = false);
+
+        const targetWeddingDate = new Date("July 11, 2026 00:00:00").getTime();
+
+        function runCountdownTimer() {
+            const now = new Date().getTime();
+            const difference = targetWeddingDate - now;
+            if (difference < 0) {
+                document.getElementById('countdown-container').innerHTML = "<div class='revealed-date'>The Big Day is Here!</div>";
+                return;
+            }
+            const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+            document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+            document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
+            document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
+        }
+
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+        function handleScrollReveal() {
+            const triggerBottom = window.innerHeight * 0.9;
+            revealElements.forEach(el => {
+                const elTop = el.getBoundingClientRect().top;
+                if (elTop < triggerBottom) el.classList.add('revealed');
+            });
+        }
+
+        window.addEventListener('scroll', handleScrollReveal);
+        window.addEventListener('DOMContentLoaded', () => {
+            initScratchCanvas();
+            setInterval(runCountdownTimer, 1000);
+            runCountdownTimer();
+        });
     </script>
 </body>
 </html>
