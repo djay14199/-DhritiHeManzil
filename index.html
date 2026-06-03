@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,32 +35,33 @@
         
         body, html {
             width: 100%;
-            background-color: #0f0809; /* Dark elegant framing backdrop for desktop gutters */
+            min-height: 100%;
+            background-color: #0f0809; /* Dark backdrop for desktop gutters */
             color: #333;
             scroll-behavior: smooth;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow-x: hidden;
         }
 
-        /* Responsive boundaries centered securely on desktop screens */
+        /* Bulletproof mobile alignment without body-flexbox shifting glitches */
         .desktop-frame-wrapper {
             width: 100%;
-            max-width: 450px; /* Emulates smartphone viewport */
+            max-width: 450px; /* Emulates phone viewport limit on desktop */
             min-height: 100vh;
-            background-color: #000000; /* Set to deep black so video transitions seamlessly */
+            background-color: #000000; /* Deep black base for seamless video transition */
             position: relative;
             box-shadow: 0 0 60px rgba(0, 0, 0, 0.85);
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
+            margin: 0 auto; /* Perfect horizontal centering on PC, fits 100% on phones */
         }
 
         /* --- STREAMING_CHUNK: Setting up the splits for door.png... --- */
         #gate-container {
             position: fixed;
             top: 0;
+            left: 50%;
+            transform: translateX(-50%); /* Centers the doors on any size screen */
             width: 100%;
             max-width: 450px;
             height: 100vh;
@@ -247,7 +248,6 @@
                 </video>
             </section>
 
-            <!-- --- STREAMING_CHUNK: Styling the Date scratch card container... --- -->
             <!-- SECTION 2: ANNOUNCEMENT & SCRATCH DATE COATING -->
             <section class="invitation-section bg-[#fffdf9] py-14 px-6 border-b-2 border-dashed border-[#e6dec9]" id="section-date-reveal">
                 <div class="text-center w-full">
@@ -290,7 +290,7 @@
             </section>
 
             <!-- SECTION 3: HALDI CEREMONY GRAPHIC WRAPPER (haldi.jpg) -->
-            <section class="invitation-section relative justify-start" style="background-image: url('haldi.jpg');">
+            <section class="invitation-section relative justify-start" style="background-image: url('haldi.jpg');" id="section-haldi">
                 <!-- Sky-Colored Blank Text Zone Overlay -->
                 <div class="w-[85%] text-center mt-[12%] px-4 z-10 flex flex-col items-center">
                     <h2 class="reveal-item font-cursive text-6xl text-[#d25400] mb-2 drop-shadow-sm">Haldi</h2>
@@ -316,9 +316,8 @@
                 </div>
             </section>
 
-            <!-- --- STREAMING_CHUNK: Aligning the Sangeet starry theme overlays with sangeet.PNG... --- -->
             <!-- SECTION 4: SANGEET GRAPHIC WRAPPER (sangeet.PNG) -->
-            <section class="invitation-section relative justify-start" style="background-image: url('sangeet.PNG');">
+            <section class="invitation-section relative justify-start" style="background-image: url('sangeet.PNG');" id="section-sangeet">
                 <!-- Dark Blue Blank Text Zone Overlay - Positioned specifically in the middle right side of the page -->
                 <div class="absolute right-[5%] top-1/2 -translate-y-1/2 w-[55%] text-center z-10 flex flex-col items-center">
                     <h2 class="reveal-item font-cursive text-5xl text-[#f3ebdf] mb-2 drop-shadow-md">Sangeet</h2>
@@ -344,7 +343,6 @@
                 </div>
             </section>
 
-            <!-- --- STREAMING_CHUNK: Generating rose gold parent placard cards... --- -->
             <!-- SECTION 5: FAMILY RECEPTION PLACARD & ATTENDANCE RECORD -->
             <section class="invitation-section bg-[#fbfaf6] py-16 px-6 flex flex-col justify-center items-center">
                 <!-- Glittery Rose Gold Placard Card -->
@@ -392,7 +390,6 @@
         </div>
     </div>
 
-    <!-- --- STREAMING_CHUNK: Compiling JS controller lifecycle... --- -->
     <!-- Core Script Engines -->
     <script>
         // Doors Open Action triggers auto video playing
@@ -504,6 +501,7 @@
         });
         window.addEventListener('touchend', () => isDrawing = false);
 
+        // --- STREAMING_CHUNK: Initializing countdown calculations... ---
         // --- COUNTDOWN MECHANICS ---
         const eventDate = new Date("July 11, 2026 00:00:00").getTime();
 
@@ -564,6 +562,80 @@
             });
         }, { threshold: 0.25 });
 
+        // --- STREAMING_CHUNK: Running multi-layer asset fallback checks... ---
+        // --- INTELLIGENT AUTO-FALLBACK BACKGROUND CORRECTION ENGINE ---
+        // Dynamically tests filenames with case-sensitivity patterns (e.g. door, Door, DOOR)
+        // alongside popular formatting suffixes to fix any localized or server-side asset mismatches.
+        function handleBackgroundFallbacks() {
+            const backgroundTargets = [
+                { selector: '#gate-container .door-half', defaultFilename: 'door.png' },
+                { selector: '#section-haldi', defaultFilename: 'haldi.jpg' },
+                { selector: '#section-sangeet', defaultFilename: 'sangeet.PNG' }
+            ];
+
+            backgroundTargets.forEach(target => {
+                const elements = document.querySelectorAll(target.selector);
+                if (elements.length === 0) return;
+
+                const defaultUrl = target.defaultFilename;
+                const testImg = new Image();
+                testImg.src = defaultUrl;
+                
+                testImg.onerror = function() {
+                    console.warn(`[Image Fallback] standard route failed for: "${defaultUrl}". Commencing deep analysis...`);
+                    
+                    const extensions = ['.png', '.PNG', '.jpg', '.JPG', '.jpeg', '.JPEG'];
+                    const dotIndex = defaultUrl.lastIndexOf('.');
+                    const rawBase = defaultUrl.substring(0, dotIndex);
+                    
+                    // Generate smart multi-casing combinations
+                    const baseVariations = [
+                        rawBase,                                            // as written
+                        rawBase.charAt(0).toUpperCase() + rawBase.slice(1), // capitalized first character
+                        rawBase.toLowerCase(),                              // entirely lowercase
+                        rawBase.toUpperCase()                               // entirely uppercase
+                    ];
+                    
+                    // Deduplicate variations
+                    const uniqueBases = [...new Set(baseVariations)];
+                    
+                    // Compile the search matrix
+                    let trials = [];
+                    uniqueBases.forEach(base => {
+                        extensions.forEach(ext => {
+                            trials.push(base + ext);
+                        });
+                    });
+                    
+                    // Deduplicate full trial URLs
+                    trials = [...new Set(trials)];
+                    
+                    let trialIndex = 0;
+                    function executeNextTrial() {
+                        if (trialIndex >= trials.length) {
+                            console.error(`[Image Fallback] Exhausted all variations for resource target: "${defaultUrl}". Please make sure the file is uploaded to your root folder.`);
+                            return;
+                        }
+                        
+                        const trialUrl = trials[trialIndex++];
+                        const trialImg = new Image();
+                        trialImg.src = trialUrl;
+                        
+                        trialImg.onload = function() {
+                            console.log(`[Image Fallback] Successfully corrected and bound image assets to path: "${trialUrl}"`);
+                            elements.forEach(el => {
+                                el.style.backgroundImage = `url('${trialUrl}')`;
+                            });
+                        };
+                        
+                        trialImg.onerror = executeNextTrial;
+                    }
+                    
+                    executeNextTrial();
+                };
+            });
+        }
+
         // Event Initializer Listeners
         window.addEventListener('scroll', handleScrollReveal);
         window.addEventListener('DOMContentLoaded', () => {
@@ -572,6 +644,7 @@
             syncCountdown();
             handleScrollReveal();
             videoObserver.observe(videoElement);
+            handleBackgroundFallbacks(); // Executed immediately to correct any broken assets automatically
         });
     </script>
 </body>
