@@ -5,74 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wedding Invitation | Dhriti & Hemant</title>
     
-    <!-- Premium Google Fonts for Luxury, Cursive, and Modern aesthetics -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS for robust mobile grid layouts and utility helpers -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        cursive: ['"Great Vibes"', 'cursive'],
-                        serifHeading: ['"Cinzel"', 'serif'],
-                        body: ['"Montserrat"', 'sans-serif'],
-                        classicSerif: ['"Playfair Display"', 'serif']
-                    }
-                }
-            }
-        }
-    </script>
     
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body, html {
             width: 100%;
             min-height: 100%;
-            background-color: #0f0809; /* Dark backdrop for desktop gutters */
+            background-color: #0f0809;
             color: #333;
             scroll-behavior: smooth;
             overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Bulletproof mobile alignment without body-flexbox shifting glitches */
         .desktop-frame-wrapper {
             width: 100%;
-            max-width: 450px; /* Emulates phone viewport limit on desktop */
+            max-width: 450px;
             min-height: 100vh;
-            background-color: #000000; /* Deep black base for seamless video transition */
+            background-color: #faf6f0;
             position: relative;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.85);
+            margin: 0 auto;
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            margin: 0 auto; /* Perfect horizontal centering on PC, fits 100% on phones */
         }
 
-        /* --- STREAMING_CHUNK: Setting up the splits for door.png... --- */
         #gate-container {
             position: fixed;
             top: 0;
             left: 50%;
-            transform: translateX(-50%); /* Centers the doors on any size screen */
+            transform: translateX(-50%);
             width: 100%;
             max-width: 450px;
             height: 100vh;
             z-index: 9999;
             perspective: 1500px;
             overflow: hidden;
-            background: transparent; /* Transparent backdrop ensures no color flash when doors split */
-            transition: opacity 1s, visibility 1s;
+            background: #000;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
 
-        /* Door splits using door.png verbatim (all lowercase) */
         .door-half {
             position: absolute;
             top: 0;
@@ -81,48 +57,17 @@
             background-image: url('door.png');
             background-size: 200% 100%;
             background-repeat: no-repeat;
-            transition: transform 2.2s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: transform 2s cubic-bezier(0.77, 0, 0.175, 1);
             box-shadow: 0 0 25px rgba(0,0,0,0.3);
         }
 
-        .door-left {
-            left: 0;
-            background-position: left center;
-            transform-origin: left center;
-        }
+        .door-left { left: 0; background-position: left center; transform-origin: left center; }
+        .door-right { right: 0; background-position: right center; transform-origin: right center; }
 
-        .door-right {
-            right: 0;
-            background-position: right center;
-            transform-origin: right center;
-        }
+        .gate-opened .door-left { transform: rotateY(-110deg); }
+        .gate-opened .door-right { transform: rotateY(110deg); }
+        .gate-opened { opacity: 0; pointer-events: none; }
 
-        /* Opening gate action classes */
-        .gate-opened .door-left {
-            transform: rotateY(-110deg);
-        }
-        .gate-opened .door-right {
-            transform: rotateY(110deg);
-        }
-        .gate-opened .gate-ui-layer {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* --- STREAMING_CHUNK: Defining scrollable container physics... --- */
-        #main-content {
-            opacity: 0;
-            visibility: hidden;
-            width: 100%;
-            transition: opacity 0.2s ease-in-out; /* Super fast transition so content loads behind splitting doors instantly */
-        }
-
-        .content-active #main-content {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Standardized Section Styling for PDF flow */
         .invitation-section {
             position: relative;
             width: 100%;
@@ -132,519 +77,100 @@
             align-items: center;
             justify-content: center;
             background-position: center top;
-            background-size: 100% 100%;
+            background-size: cover;
             background-repeat: no-repeat;
             overflow: hidden;
         }
 
-        /* Reveal states for text overlay components */
-        .reveal-item {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        .reveal-item.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Timing Delays for fluid sequential loading */
-        .delay-100 { transition-delay: 100ms; }
-        .delay-300 { transition-delay: 300ms; }
-        .delay-500 { transition-delay: 500ms; }
-
-        /* Metallic Rose Gold Placard Base Styling */
-        .glittery-rose-gold {
-            background: linear-gradient(135deg, #e0a3ad 0%, #f9dce2 25%, #b2737c 50%, #f5cbd2 75%, #ca8a94 100%);
-            background-size: 200% 200%;
-            animation: shimmeryGlow 6s infinite ease-in-out;
-        }
-
-        /* Luxurious Glittering Gold Text Base */
-        .glittery-gold-text {
-            background: linear-gradient(135deg, #eed083 0%, #fbf5b7 30%, #d4af37 50%, #fbf5b7 70%, #aa771c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% auto;
-            animation: shimmeryGlow 4s linear infinite;
-        }
-
-        @keyframes shimmeryGlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Sparkle reflection animation elements */
-        .glitter-shine {
-            position: relative;
-            overflow: hidden;
-        }
-        .glitter-shine::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -60%; width: 30%; height: 200%;
-            background: rgba(255, 255, 255, 0.4);
-            transform: rotate(30deg);
-            transition: none;
-            animation: shinySweep 4.5s infinite ease-in-out;
-        }
-        @keyframes shinySweep {
-            0% { left: -60%; }
-            30%, 100% { left: 140%; }
-        }
-
-        /* Glowing particles behind golden elements */
-        .sparkle-dot {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: twinkle 1.5s infinite alternate;
-        }
-        @keyframes twinkle {
-            0% { transform: scale(0.3); opacity: 0.1; }
-            100% { transform: scale(1.1); opacity: 0.9; }
-        }
+        .reveal-item { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1); }
+        .reveal-item.revealed { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
 
     <div class="desktop-frame-wrapper">
-
-        <!-- LOCKING SPLIT DOOR ENTRYWAY -->
         <div id="gate-container">
             <div class="door-half door-left"></div>
             <div class="door-half door-right"></div>
-            
-            <!-- Static Text Layer over Doors -->
-            <div class="gate-ui-layer absolute inset-0 flex flex-col justify-between items-center py-20 px-6 z-20 transition-all duration-700">
-                <div class="text-center">
-                    <span class="block font-serifHeading text-2xl tracking-[6px] text-[#8a1426] font-bold drop-shadow-md">YOU'RE INVITED</span>
-                    <div class="w-16 h-[1.5px] bg-[#8a1426] mx-auto mt-3 opacity-60"></div>
-                </div>
-
-                <div class="text-center flex flex-col items-center">
-                    <!-- Heart Circle Unlock Button -->
-                    <button onclick="triggerGateOpen()" class="w-[75px] h-[75px] bg-white rounded-full flex justify-center items-center shadow-2xl border border-rose-100 hover:scale-105 active:scale-95 transition-transform duration-200" aria-label="Unlock Webpage">
-                        <svg class="w-9 h-9 fill-[#c92a3b] animate-[bounce_1.8s_infinite]" viewBox="0 0 32 32">
-                            <path d="M16 28.5s-12-7.31-12-14.5C4 9.13 7.82 5 12.5 5c2.9 0 5.48 1.57 6.94 4 1.46-2.43 4.04-4 6.94-4C30.93 5 34 9.13 34 14c0 7.19-12 14.5-12 14.5z"/>
-                        </svg>
-                    </button>
-                    <span class="block mt-6 font-serifHeading text-[0.8rem] text-white tracking-[3px] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">Tap to open your invitation</span>
-                </div>
+            <div class="absolute inset-0 flex flex-col justify-between items-center py-20 px-6 z-20">
+                <span class="text-2xl tracking-[6px] text-rose-200 font-bold font-serif">YOU'RE INVITED</span>
+                <button onclick="triggerGateOpen()" class="w-16 h-16 bg-white rounded-full flex justify-center items-center animate-bounce shadow-lg">
+                    <svg class="w-8 h-8 fill-rose-600" viewBox="0 0 32 32"><path d="M16 28.5s-12-7.31-12-14.5C4 9.13 7.82 5 12.5 5c2.9 0 5.48 1.57 6.94 4 1.46-2.43 4.04-4 6.94-4C30.93 5 34 9.13 34 14c0 7.19-12 14.5-12 14.5z"/></svg>
+                </button>
+                <span class="text-white font-serif italic text-sm">Tap to open your invitation</span>
             </div>
         </div>
 
-        <!-- SCROLLABLE SECTIONS -->
         <div id="main-content">
-            
-            <!-- SECTION 1: DYNAMIC AUTOPLAY VIDEO PAGE -->
-            <section class="invitation-section bg-black flex items-center justify-center min-h-screen">
-                <video id="invitation-video" class="w-full h-full object-cover" muted playsinline>
+            <section class="invitation-section bg-black">
+                <video id="invitation-video" class="w-full h-full object-cover" playsinline>
                     <source src="video 1.mp4" type="video/mp4">
-                    Your browser does not support HTML5 video formats.
                 </video>
             </section>
 
-            <!-- SECTION 2: ANNOUNCEMENT & SCRATCH DATE COATING -->
-            <section class="invitation-section bg-[#fffdf9] py-14 px-6 border-b-2 border-dashed border-[#e6dec9]" id="section-date-reveal">
-                <div class="text-center w-full">
-                    <span class="reveal-item block font-classicSerif text-lg text-gray-500 uppercase tracking-[3px] mb-2 font-medium">With immense joy and love</span>
-                    <h2 class="reveal-item block font-cursive text-5xl md:text-6xl text-[#8a1426] mb-8">Dhriti & Hemant</h2>
-                    
-                    <!-- Glittery Interactive Canvas Box -->
-                    <div class="reveal-item relative w-[310px] h-[140px] mx-auto rounded-xl overflow-hidden shadow-xl border-2 border-amber-200">
-                        <!-- Date revealed layout underneath (No extra location label, only the Date) -->
-                        <div class="scratch-underlayer absolute inset-0 bg-[#fffcf5] flex flex-col justify-center items-center border-4 border-double border-amber-500 rounded-xl z-10">
-                            <span class="font-serifHeading text-3xl font-extrabold text-[#8a1426] tracking-wider">11TH JULY 2026</span>
-                        </div>
-                        
-                        <!-- Scratch off overlay canvas -->
-                        <canvas id="scratch-canvas" width="310" height="140" class="absolute inset-0 z-20 cursor-pointer touch-none"></canvas>
-                    </div>
-
-                    <!-- Realtime live countdown revealed post-scratch -->
-                    <div id="countdown-wrapper" class="mt-12 transition-all duration-1000 transform translate-y-10 opacity-0">
-                        <div class="flex justify-center gap-3">
-                            <div class="bg-[#8a1426] text-white min-w-[64px] py-3 rounded-lg shadow-md">
-                                <span class="block font-serifHeading text-lg font-bold" id="days">00</span>
-                                <span class="block text-[0.6rem] uppercase tracking-[1px] font-body text-rose-200 mt-1">Days</span>
-                            </div>
-                            <div class="bg-[#8a1426] text-white min-w-[64px] py-3 rounded-lg shadow-md">
-                                <span class="block font-serifHeading text-lg font-bold" id="hours">00</span>
-                                <span class="block text-[0.6rem] uppercase tracking-[1px] font-body text-rose-200 mt-1">Hours</span>
-                            </div>
-                            <div class="bg-[#8a1426] text-white min-w-[64px] py-3 rounded-lg shadow-md">
-                                <span class="block font-serifHeading text-lg font-bold" id="minutes">00</span>
-                                <span class="block text-[0.6rem] uppercase tracking-[1px] font-body text-rose-200 mt-1">Min</span>
-                            </div>
-                            <div class="bg-[#8a1426] text-white min-w-[64px] py-3 rounded-lg shadow-md">
-                                <span class="block font-serifHeading text-lg font-bold" id="seconds">00</span>
-                                <span class="block text-[0.6rem] uppercase tracking-[1px] font-body text-rose-200 mt-1">Sec</span>
-                            </div>
-                        </div>
-                    </div>
+            <section class="invitation-section bg-[#fffdf9] py-14 px-6" id="section-date-reveal">
+                <h2 class="reveal-item text-5xl text-[#8a1426] mb-8 font-serif">Dhriti & Hemant</h2>
+                <div class="reveal-item relative w-[310px] h-[140px] rounded-xl overflow-hidden border-2 border-amber-200">
+                    <div class="absolute inset-0 bg-[#fffcf5] flex items-center justify-center font-bold text-3xl text-[#8a1426] font-serif">11TH JULY 2026</div>
+                    <canvas id="scratch-canvas" width="310" height="140" class="absolute inset-0 z-20 cursor-pointer"></canvas>
                 </div>
             </section>
 
-            <!-- SECTION 3: HALDI CEREMONY GRAPHIC WRAPPER (haldi.jpg) -->
-            <section class="invitation-section relative justify-start" style="background-image: url('haldi.jpg');" id="section-haldi">
-                <!-- Sky-Colored Blank Text Zone Overlay -->
-                <div class="w-[85%] text-center mt-[12%] px-4 z-10 flex flex-col items-center">
-                    <h2 class="reveal-item font-cursive text-6xl text-[#d25400] mb-2 drop-shadow-sm">Haldi</h2>
-                    
-                    <div class="reveal-item w-24 h-[1.5px] bg-[#d25400] mb-4 opacity-50"></div>
-                    
-                    <div class="reveal-item font-classicSerif text-[1.1rem] text-[#3e271a] italic tracking-wide font-semibold mb-3">
-                        Welcome to the Yellow Carnival
-                    </div>
-                    
-                    <div class="reveal-item flex flex-col gap-1 font-body text-[0.85rem] text-[#553b1b] font-medium leading-relaxed">
-                        <p class="font-bold text-base text-[#924203]">10th July 2026, Friday</p>
-                        <p class="tracking-[1px]">12:00 PM onwards</p>
-                        <p class="font-bold tracking-[1px] mt-0.5">Nirwana, Ludhiana</p>
-                    </div>
-
-                    <a href="https://www.google.com/maps/dir//NIRVANA+Luxury+Hotel+I+Ludhiana,+Main+Hambran+Rd,+Pratap+Singh+Wala,+Ludhiana,+Punjab+141008/@28.7113216,77.103104,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a81e54b544107:0xb94593736b0321ec!2m2!1d75.7789362!2d30.9187453?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D" 
-                       target="_blank" 
-                       class="reveal-item mt-4 inline-flex items-center gap-1 text-[0.75rem] font-serifHeading font-bold text-[#b45309] tracking-[2px] uppercase border-b border-[#b45309] pb-0.5 hover:text-[#78350f] transition-colors duration-200">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-                        Get directions
-                    </a>
+            <section class="invitation-section" style="background-image: url('haldi.jpg');" id="section-haldi">
+                <div class="mt-20 px-6 text-center">
+                    <h2 class="reveal-item text-6xl text-[#d25400] font-serif">Haldi</h2>
+                    <p class="reveal-item text-lg mt-4 font-serif">Welcome to the Yellow Carnival</p>
+                    <p class="reveal-item text-sm mt-2">10th July 2026, Friday</p>
+                    <p class="reveal-item text-sm mt-1">12:00 PM onwards</p>
+                    <p class="reveal-item text-sm mt-1">Nirwana, Ludhiana</p>
+                    <a href="https://www.google.com/maps/dir//NIRVANA+Luxury+Hotel+I+Ludhiana,+Main+Hambran+Rd,+Pratap+Singh+Wala,+Ludhiana,+Punjab+141008/@28.7113216,77.103104,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a813715bbc3d7:0xb94593736b0321ec!2m2!1d75.7789362!2d30.9187453?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D" class="reveal-item block mt-4 text-[#d25400] font-bold underline">Get directions</a>
                 </div>
             </section>
 
-            <!-- SECTION 4: SANGEET GRAPHIC WRAPPER (sangeet.PNG) -->
-            <section class="invitation-section relative justify-start" style="background-image: url('sangeet.PNG');" id="section-sangeet">
-                <!-- Dark Blue Blank Text Zone Overlay - Positioned specifically in the middle right side of the page -->
-                <div class="absolute right-[5%] top-1/2 -translate-y-1/2 w-[55%] text-center z-10 flex flex-col items-center">
-                    <h2 class="reveal-item font-cursive text-5xl text-[#f3ebdf] mb-2 drop-shadow-md">Sangeet</h2>
-                    
-                    <div class="reveal-item w-16 h-[1.5px] bg-[#d4af37] mb-3 opacity-50"></div>
-                    
-                    <div class="reveal-item font-classicSerif text-[0.9rem] text-stone-200 italic tracking-wide font-medium mb-3 leading-relaxed drop-shadow-sm">
-                        A playful night of Sangeet and Cultural festivities
-                    </div>
-                    
-                    <div class="reveal-item flex flex-col gap-1 font-body text-[0.75rem] text-stone-300 tracking-[0.5px] leading-relaxed drop-shadow">
-                        <p class="font-bold text-[0.85rem] text-[#e5c1a7]">10th July 2026, Friday</p>
-                        <p class="opacity-90">07:00 PM onwards</p>
-                        <p class="font-bold opacity-95 mt-0.5">Nirwana, Ludhiana</p>
-                    </div>
-
-                    <a href="https://www.google.com/maps/dir/28.7885282,77.1178669/NIRVANA+Luxury+Hotel+I+Ludhiana,+Main+Hambran+Rd,+Pratap+Singh+Wala,+Ludhiana,+Punjab+141008/@28.7113216,77.103104,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a81e54b544107:0xb94593736b0321ec!2m2!1d75.7789362!2d30.9187453?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D" 
-                       target="_blank" 
-                       class="reveal-item mt-4 inline-flex items-center gap-1 text-[0.7rem] font-serifHeading font-bold text-[#e5c1a7] tracking-[2px] uppercase border-b border-[#e5c1a7] pb-0.5 hover:text-white transition-colors duration-200 drop-shadow">
-                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-                        Get directions
-                    </a>
+            <section class="invitation-section" style="background-image: url('sangeet.PNG');" id="section-sangeet">
+                <div class="absolute right-[5%] top-[40%] w-[45%] text-center px-4">
+                    <h2 class="reveal-item text-5xl text-[#f3ebdf] font-serif">Sangeet</h2>
+                    <p class="reveal-item text-lg mt-4 text-[#f3ebdf] font-serif">A playful night of Sangeet and Cultural festivities</p>
+                    <p class="reveal-item text-sm mt-2 text-[#f3ebdf]">10th July 2026, Friday</p>
+                    <p class="reveal-item text-sm mt-1 text-[#f3ebdf]">07:00 PM onwards</p>
+                    <p class="reveal-item text-sm mt-1 text-[#f3ebdf]">Nirwana, Ludhiana</p>
+                    <a href="https://www.google.com/maps/dir/28.7885282,77.1178669/NIRVANA+Luxury+Hotel+I+Ludhiana,+Main+Hambran+Rd,+Pratap+Singh+Wala,+Ludhiana,+Punjab+141008/@28.7113216,77.103104,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a813715bbc3d7:0xb94593736b0321ec!2m2!1d75.7789362!2d30.9187453?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D" class="reveal-item block mt-4 text-[#f3ebdf] font-bold underline">Get directions</a>
                 </div>
             </section>
-
-            <!-- SECTION 5: FAMILY RECEPTION PLACARD & ATTENDANCE RECORD -->
-            <section class="invitation-section bg-[#fbfaf6] py-16 px-6 flex flex-col justify-center items-center">
-                <!-- Glittery Rose Gold Placard Card -->
-                <div class="reveal-item glittery-rose-gold glitter-shine w-full max-w-[340px] rounded-2xl p-8 text-center shadow-xl border border-rose-100 mb-14">
-                    <span class="glittery-gold-text block font-serifHeading text-lg md:text-xl font-bold tracking-[4px] uppercase leading-relaxed">
-                        Awaiting your noble presence
-                    </span>
-                </div>
-
-                <!-- With Love, The Families -->
-                <div class="text-center">
-                    <span class="reveal-item block font-classicSerif text-xl italic text-gray-500 mb-1">With Love,</span>
-                    <h3 class="reveal-item block font-cursive text-5xl text-[#8a1426] mb-12">The Families</h3>
-                </div>
-
-                <div class="w-full max-w-[340px] flex flex-col gap-8">
-                    <!-- Groom Card -->
-                    <div class="reveal-item bg-white p-6 rounded-xl shadow-md border-l-4 border-amber-400">
-                        <h4 class="font-serifHeading text-lg text-[#8a1426] font-bold tracking-[2px] uppercase border-b pb-2 mb-3">Groom's family</h4>
-                        <div class="font-body text-[0.95rem] text-gray-700 space-y-1 font-medium">
-                            <p>Mrs. Preeti Jain</p>
-                            <p>Mr. Puneet Jain</p>
-                        </div>
-                    </div>
-
-                    <!-- Bride Card -->
-                    <div class="reveal-item bg-white p-6 rounded-xl shadow-md border-l-4 border-rose-400">
-                        <h4 class="font-serifHeading text-lg text-[#8a1426] font-bold tracking-[2px] uppercase border-b pb-2 mb-3">Bride's family</h4>
-                        <div class="font-body text-[0.95rem] text-gray-700 space-y-1 font-medium">
-                            <p>Mrs. Preeti Jain</p>
-                            <p>Mr. Dheeraj Jain</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- FOOTER COMPONENT -->
-            <footer class="bg-[#0e0809] py-16 px-6 text-center border-t border-[#1f1315]">
-                <h4 class="font-cursive text-4xl text-[#eed083] mb-4">Dhriti & Hemant ❤️</h4>
-                <p class="font-serifHeading text-3xl md:text-4xl tracking-[4px] text-[#eed083] uppercase font-bold mt-2">#DhritiHeManzil</p>
-                <div class="w-16 h-[1px] bg-[#eed083] mx-auto mt-6 opacity-30"></div>
-                <span class="block mt-4 text-[0.65rem] uppercase tracking-[2px] font-body text-gray-500">Made with love • 2026</span>
-            </footer>
-
         </div>
     </div>
 
-    <!-- Core Script Engines -->
     <script>
-        // Doors Open Action triggers auto video playing
         function triggerGateOpen() {
             const gate = document.getElementById('gate-container');
             gate.classList.add('gate-opened');
-            
-            // Activate continuous content flow opacity immediately
-            document.body.classList.add('content-active');
-            
-            // Autoplay the video
             const video = document.getElementById('invitation-video');
-            if (video) {
-                video.play().catch(error => {
-                    console.log("Video autoplay prevented by browser policies. Triggering playback on touch input.");
-                });
-            }
-
-            // Remove gate doors from layout context after motion finishes to prevent viewport scroll barriers
-            setTimeout(() => {
-                gate.style.display = 'none';
-                // Trigger viewport element scrolling metrics manually on layout completion
-                handleScrollReveal();
-            }, 2200);
+            video.play().catch(e => console.log("Autoplay blocked"));
+            setTimeout(() => gate.style.display = 'none', 2000);
         }
 
-        // --- SCRATCH TO REVEAL ENGINE ---
         const canvas = document.getElementById('scratch-canvas');
         const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-        let isScratchedCompleted = false;
-
-        function buildScratchTexture() {
-            // Fill background with a custom metallic golden brush pattern representing glitter
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#bf953f');
-            gradient.addColorStop(0.25, '#fcf6ba');
-            gradient.addColorStop(0.5, '#b38728');
-            gradient.addColorStop(0.75, '#fbf5b7');
-            gradient.addColorStop(1, '#aa771c');
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw extra shimmering particles on canvas overlay
-            for (let i = 0; i < 400; i++) {
-                ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.45})`;
-                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2 + 1, Math.random() * 2 + 1);
-            }
-
-            ctx.font = "bold 13px 'Cinzel', sans-serif";
-            ctx.fillStyle = "#634710";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("SCRATCH HERE TO REVEAL", canvas.width / 2, canvas.height / 2);
-        }
-
-        function scratchPaint(x, y) {
+        ctx.fillStyle = '#bf953f'; ctx.fillRect(0,0,310,140);
+        
+        canvas.addEventListener('mousemove', (e) => {
             ctx.globalCompositeOperation = 'destination-out';
             ctx.beginPath();
-            ctx.arc(x, y, 22, 0, Math.PI * 2);
+            ctx.arc(e.offsetX, e.offsetY, 20, 0, Math.PI*2);
             ctx.fill();
-            
-            if (!isScratchedCompleted) {
-                calculateScratchCompletion();
-            }
-        }
-
-        function calculateScratchCompletion() {
-            const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-            let clearedCount = 0;
-            
-            // Analyze the transparency channel to count cleared coordinates
-            for (let i = 3; i < pixels.length; i += 4) {
-                if (pixels[i] === 0) clearedCount++;
-            }
-            
-            // Complete reveal on 45% scratch coverage
-            if (clearedCount / (pixels.length / 4) > 0.45) {
-                isScratchedCompleted = true;
-                canvas.style.transition = 'opacity 0.8s ease-out';
-                canvas.style.opacity = '0';
-                
-                // Show countdown block elegantly
-                const countdown = document.getElementById('countdown-wrapper');
-                countdown.classList.remove('opacity-0', 'translate-y-10');
-                
-                setTimeout(() => {
-                    canvas.remove();
-                }, 850);
-            }
-        }
-
-        // Pointer event mappings for Desktop and Mobile Scratch compatibility
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratchPaint(e.offsetX, e.offsetY); });
-        canvas.addEventListener('mousemove', (e) => { if (isDrawing) scratchPaint(e.offsetX, e.offsetY); });
-        window.addEventListener('mouseup', () => isDrawing = false);
-
-        canvas.addEventListener('touchstart', (e) => {
-            isDrawing = true;
-            const bbox = canvas.getBoundingClientRect();
-            scratchPaint(e.touches[0].clientX - bbox.left, e.touches[0].clientY - bbox.top);
-        });
-        canvas.addEventListener('touchmove', (e) => {
-            if (!isDrawing) return;
-            e.preventDefault();
-            const bbox = canvas.getBoundingClientRect();
-            scratchPaint(e.touches[0].clientX - bbox.left, e.touches[0].clientY - bbox.top);
-        });
-        window.addEventListener('touchend', () => isDrawing = false);
-
-        // --- STREAMING_CHUNK: Initializing countdown calculations... ---
-        // --- COUNTDOWN MECHANICS ---
-        const eventDate = new Date("July 11, 2026 00:00:00").getTime();
-
-        function syncCountdown() {
-            const currentTime = new Date().getTime();
-            const distance = eventDate - currentTime;
-
-            if (distance < 0) {
-                document.getElementById('countdown-wrapper').innerHTML = `<span class="block font-serifHeading text-[#8a1426] tracking-widest text-lg font-bold">THE CELEBRATION CONTINUES!</span>`;
-                return;
-            }
-
-            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('days').innerText = d < 10 ? '0' + d : d;
-            document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
-            document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
-            document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
-        }
-
-        // --- INTERSECTION MONITORING FOR GRACEFUL REVEALS ---
-        const scrollElements = document.querySelectorAll('.reveal-item');
-
-        function handleScrollReveal() {
-            const triggerOffset = window.innerHeight * 0.90;
-            
-            scrollElements.forEach(item => {
-                const elementTop = item.getBoundingClientRect().top;
-                if (elementTop < triggerOffset) {
-                    item.classList.add('revealed');
-                }
-            });
-        }
-
-        // --- Handling Video Auto-Pause on Scroll & Play Once ---
-        const videoElement = document.getElementById('invitation-video');
-
-        // Play exactly once, then pause at the final frame
-        videoElement.addEventListener('ended', () => {
-            videoElement.pause();
-            console.log("Video played once and paused on the final frame.");
         });
 
-        // Intersection Observer to pause the video when scrolled out of view and resume when back in view
-        const videoObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Only resume if it hasn't reached the end yet
-                    if (videoElement.currentTime < videoElement.duration) {
-                        videoElement.play().catch(err => console.log("Video playback waiting for tap."));
-                    }
-                } else {
-                    videoElement.pause();
-                }
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.reveal-item').forEach(el => {
+                if(el.getBoundingClientRect().top < window.innerHeight * 0.9) el.classList.add('revealed');
             });
-        }, { threshold: 0.25 });
+        });
 
-        // --- STREAMING_CHUNK: Running multi-layer asset fallback checks... ---
-        // --- INTELLIGENT AUTO-FALLBACK BACKGROUND CORRECTION ENGINE ---
-        // Dynamically tests filenames with case-sensitivity patterns (e.g. door, Door, DOOR)
-        // alongside popular formatting suffixes to fix any localized or server-side asset mismatches.
-        function handleBackgroundFallbacks() {
-            const backgroundTargets = [
-                { selector: '#gate-container .door-half', defaultFilename: 'door.png' },
-                { selector: '#section-haldi', defaultFilename: 'haldi.jpg' },
-                { selector: '#section-sangeet', defaultFilename: 'sangeet.PNG' }
-            ];
-
-            backgroundTargets.forEach(target => {
-                const elements = document.querySelectorAll(target.selector);
-                if (elements.length === 0) return;
-
-                const defaultUrl = target.defaultFilename;
-                const testImg = new Image();
-                testImg.src = defaultUrl;
-                
-                testImg.onerror = function() {
-                    console.warn(`[Image Fallback] standard route failed for: "${defaultUrl}". Commencing deep analysis...`);
-                    
-                    const extensions = ['.png', '.PNG', '.jpg', '.JPG', '.jpeg', '.JPEG'];
-                    const dotIndex = defaultUrl.lastIndexOf('.');
-                    const rawBase = defaultUrl.substring(0, dotIndex);
-                    
-                    // Generate smart multi-casing combinations
-                    const baseVariations = [
-                        rawBase,                                            // as written
-                        rawBase.charAt(0).toUpperCase() + rawBase.slice(1), // capitalized first character
-                        rawBase.toLowerCase(),                              // entirely lowercase
-                        rawBase.toUpperCase()                               // entirely uppercase
-                    ];
-                    
-                    // Deduplicate variations
-                    const uniqueBases = [...new Set(baseVariations)];
-                    
-                    // Compile the search matrix
-                    let trials = [];
-                    uniqueBases.forEach(base => {
-                        extensions.forEach(ext => {
-                            trials.push(base + ext);
-                        });
-                    });
-                    
-                    // Deduplicate full trial URLs
-                    trials = [...new Set(trials)];
-                    
-                    let trialIndex = 0;
-                    function executeNextTrial() {
-                        if (trialIndex >= trials.length) {
-                            console.error(`[Image Fallback] Exhausted all variations for resource target: "${defaultUrl}". Please make sure the file is uploaded to your root folder.`);
-                            return;
-                        }
-                        
-                        const trialUrl = trials[trialIndex++];
-                        const trialImg = new Image();
-                        trialImg.src = trialUrl;
-                        
-                        trialImg.onload = function() {
-                            console.log(`[Image Fallback] Successfully corrected and bound image assets to path: "${trialUrl}"`);
-                            elements.forEach(el => {
-                                el.style.backgroundImage = `url('${trialUrl}')`;
-                            });
-                        };
-                        
-                        trialImg.onerror = executeNextTrial;
-                    }
-                    
-                    executeNextTrial();
-                };
-            });
-        }
-
-        // Event Initializer Listeners
-        window.addEventListener('scroll', handleScrollReveal);
-        window.addEventListener('DOMContentLoaded', () => {
-            buildScratchTexture();
-            setInterval(syncCountdown, 1000);
-            syncCountdown();
-            handleScrollReveal();
-            videoObserver.observe(videoElement);
-            handleBackgroundFallbacks(); // Executed immediately to correct any broken assets automatically
+        // Ensure video pauses on scroll out
+        const video = document.getElementById('invitation-video');
+        window.addEventListener('scroll', () => {
+            const rect = video.getBoundingClientRect();
+            if(rect.top > window.innerHeight || rect.bottom < 0) video.pause();
         });
     </script>
 </body>
