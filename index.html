@@ -4,11 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wedding Invitation | Dhriti & Hemant</title>
-    <!-- Premium Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,500;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Premium Google Fonts for Luxury, Cursive, and Modern aesthetics -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS for robust mobile grid layouts and utility helpers -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cursive: ['"Great Vibes"', 'cursive'],
+                        serifHeading: ['"Cinzel"', 'serif'],
+                        body: ['"Montserrat"', 'sans-serif'],
+                        classicSerif: ['"Playfair Display"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
     
     <style>
-        /* --- CORE RULES & DESKTOP RESPONSIVE BOUNDARIES --- */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -18,24 +35,29 @@
         
         body, html {
             width: 100%;
-            background-color: #1a1112; /* Rich dark background for desktop framing */
+            background-color: #0f0809; /* Dark elegant framing backdrop for desktop gutters */
             color: #333;
             scroll-behavior: smooth;
             display: flex;
             justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
         }
 
-        /* Essential device boundary container to protect mobile formatting on PC monitors */
-        .phone-wrapper {
+        /* Responsive boundaries centered securely on desktop screens */
+        .desktop-frame-wrapper {
             width: 100%;
-            max-width: 450px; /* Emulates smartphone proportions perfectly */
-            background-color: #faf6f0;
+            max-width: 450px; /* Emulates smartphone viewport */
             min-height: 100vh;
+            background-color: #000000; /* Set to deep black so video transitions seamlessly */
             position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.6);
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.85);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- PRE-LOADER SPLASH GATE --- */
+        /* --- STREAMING_CHUNK: Setting up the splits for Door.png... --- */
         #gate-container {
             position: fixed;
             top: 0;
@@ -45,27 +67,11 @@
             z-index: 9999;
             perspective: 1500px;
             overflow: hidden;
-            background: #faf6f0;
-            transition: visibility 1.5s;
+            background: transparent; /* Transparent backdrop ensures no color flash when doors split */
+            transition: opacity 1s, visibility 1s;
         }
 
-        .gate-header-text {
-            position: absolute;
-            top: 12%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            color: #8a1426;
-            letter-spacing: 4px;
-            text-align: center;
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.15);
-            pointer-events: none;
-            width: 100%;
-            animation: softPulse 2.5s infinite alternate;
-        }
-
+        /* Door splits using Door.png verbatim */
         .door-half {
             position: absolute;
             top: 0;
@@ -74,65 +80,48 @@
             background-image: url('Door.png');
             background-size: 200% 100%;
             background-repeat: no-repeat;
-            transition: transform 1.8s cubic-bezier(0.77, 0, 0.175, 1);
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            transition: transform 2.2s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: 0 0 25px rgba(0,0,0,0.3);
         }
 
-        .door-left { left: 0; background-position: left center; transform-origin: left center; }
-        .door-right { right: 0; background-position: right center; transform-origin: right center; }
-
-        .unlock-assembly {
-            position: absolute;
-            bottom: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            text-align: center;
-            width: 100%;
-            transition: opacity 0.5s ease;
+        .door-left {
+            left: 0;
+            background-position: left center;
+            transform-origin: left center;
         }
 
-        .heart-btn {
-            width: 72px;
-            height: 72px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            border: none;
-            animation: heartbeat 1.6s infinite;
+        .door-right {
+            right: 0;
+            background-position: right center;
+            transform-origin: right center;
         }
 
-        .heart-btn svg { width: 36px; height: 36px; fill: #c92a3b; }
-
-        .tap-instruction {
-            margin-top: 15px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            color: #fff;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 8px rgba(0,0,0,1), 0px 0px 4px #000;
-            text-transform: uppercase;
-            font-weight: 600;
+        /* Opening gate action classes */
+        .gate-opened .door-left {
+            transform: rotateY(-110deg);
+        }
+        .gate-opened .door-right {
+            transform: rotateY(110deg);
+        }
+        .gate-opened .gate-ui-layer {
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .gate-opened .door-left { transform: rotateY(-110deg); }
-        .gate-opened .door-right { transform: rotateY(110deg); }
-        .gate-opened .unlock-assembly, .gate-opened .gate-header-text { opacity: 0; pointer-events: none; }
-
-        /* --- CONTENT MAIN WRAPPER --- */
+        /* --- STREAMING_CHUNK: Defining scrollable container physics... --- */
         #main-content {
             opacity: 0;
             visibility: hidden;
             width: 100%;
-            transition: opacity 1s ease-in 0.5s;
+            transition: opacity 0.2s ease-in-out; /* Super fast transition so content loads behind splitting doors instantly */
         }
 
-        .content-active #main-content { opacity: 1; visibility: visible; }
+        .content-active #main-content {
+            opacity: 1;
+            visibility: visible;
+        }
 
+        /* Standardized Section Styling for PDF flow */
         .invitation-section {
             position: relative;
             width: 100%;
@@ -140,443 +129,397 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow: hidden;
+            justify-content: center;
+            background-position: center top;
             background-size: 100% 100%;
             background-repeat: no-repeat;
-        }
-
-        /* --- SECTION 1: CODE TEXT OVERLAY (PAGE 1) --- */
-        #section-page1 {
-            background-image: url('page 1.png');
-            padding-top: 13%;
-        }
-
-        /* Hides old card details cleanly */
-        .mask-p1-parents { position: absolute; top: 11%; width: 75%; height: 6%; background: #ebf3e7; }
-        .mask-p1-names { position: absolute; top: 21%; width: 75%; height: 18%; background: #ebf3e7; }
-        .mask-p1-details { position: absolute; top: 41%; width: 75%; height: 16%; background: #ebf3e7; }
-        .mask-p1-fire { position: absolute; bottom: 12%; width: 25%; height: 12%; background: #ebf3e7; }
-
-        /* Animated Custom Typography Overlays */
-        .p1-text-parents {
-            position: relative;
-            z-index: 5;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.78rem;
-            color: #4a5d4e;
-            text-align: center;
-            line-height: 1.6;
-            letter-spacing: 0.5px;
-            margin-top: 12px;
-        }
-
-        .p1-text-names {
-            position: relative;
-            z-index: 5;
-            font-family: 'Great Vibes', cursive;
-            font-size: 3rem;
-            color: #8a1426;
-            text-align: center;
-            margin-top: 9%;
-            line-height: 1.2;
-        }
-
-        .p1-text-details {
-            position: relative;
-            z-index: 5;
-            font-family: 'Cinzel', serif;
-            text-align: center;
-            margin-top: 11%;
-            color: #2b3a2f;
-        }
-        .p1-text-details h3 { font-size: 1rem; letter-spacing: 2px; color: #8a1426; margin-bottom: 5px;}
-        .p1-text-details p { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; letter-spacing: 1px; font-weight: 600;}
-
-        /* Repositioned Dynamic Fire Layer */
-        .fire-animator-overlay {
-            position: absolute;
-            bottom: 14%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 70px;
-            pointer-events: none;
-            mix-blend-mode: multiply; /* Blends flawlessly into pastel card stock */
-            opacity: 0.9;
-            z-index: 6;
-        }
-
-        /* --- SECTION 2: SCRATCH CARD & TIMER --- */
-        #section-scratch {
-            background: linear-gradient(135deg, #fffcf7 0%, #f3ebdf 100%);
-            text-align: center;
-            justify-content: center;
-            padding: 40px 20px;
-            border-bottom: 2px dashed #e2d1ba;
-        }
-
-        .announcement-text {
-            font-family: 'Great Vibes', cursive;
-            font-size: 3.3rem;
-            color: #8a1426;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        .scratch-wrapper {
-            position: relative;
-            width: 320px;
-            height: 150px;
-            margin: 10px auto;
-            box-shadow: 0 10px 30px rgba(138,20,38,0.15);
-            border-radius: 12px;
             overflow: hidden;
         }
 
-        .scratch-underlayer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background-color: #fff9f0; border: 3px double #d4af37; border-radius: 12px;
-        }
-
-        .revealed-date { font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700; color: #8a1426; letter-spacing: 1px; }
-        .revealed-year { font-family: 'Montserrat', sans-serif; font-size: 1rem; letter-spacing: 4px; color: #d4af37; margin-top: 5px; font-weight: 600; }
-        #scratch-canvas { position: absolute; top: 0; left: 0; z-index: 5; cursor: pointer; touch-action: none; }
-
-        #countdown-container { margin-top: 30px; display: flex; gap: 12px; justify-content: center; opacity: 0; transform: translateY(20px); transition: all 1s ease; }
-        #countdown-container.visible { opacity: 1; transform: translateY(0); }
-        .timer-box { background: #8a1426; color: #fff; min-width: 65px; padding: 10px 6px; border-radius: 8px; }
-        .timer-val { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: bold; display: block; }
-        .timer-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
-
-        /* --- SECTION 3: HALDI OVERLAY --- */
-        #section-haldi {
-            background-image: url('Haldi.png');
-            justify-content: flex-start;
-            padding-top: 25%;
-        }
-
-        /* Hides old layout text details cleanly */
-        .mask-haldi-names { position: absolute; top: 32%; width: 80%; height: 15%; background: #ffffff; }
-        
-        .haldi-text-names {
-            position: relative;
-            z-index: 5;
-            font-family: 'Great Vibes', cursive;
-            font-size: 3.5rem;
-            color: #e03a53;
-            text-align: center;
-            margin-top: 15%;
-            width: 100%;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
-        }
-
-        .bell-animation-overlay { position: absolute; top: 5%; width: 45px; height: 60px; pointer-events: none; transform-origin: top center; z-index: 10;}
-        .bell-left { left: 9%; animation: bellSwayLeft 3s infinite ease-in-out; }
-        .bell-right { right: 9%; animation: bellSwayRight 2.8s infinite ease-in-out; }
-
-        /* --- SECTION 4: PLACARDS & FAMILIES --- */
-        #section-families {
-            background: linear-gradient(to bottom, #fdfbf7, #f5efe4);
-            padding: 50px 20px;
-            align-items: center;
-        }
-
-        .presence-placard {
-            background: linear-gradient(135deg, #b76e79 0%, #8a4f58 100%); /* Rose Gold Base */
-            border: 2px solid #f7d6c8;
-            padding: 22px 15px;
-            width: 90%;
-            text-align: center;
-            border-radius: 8px;
-            box-shadow: 0 12px 30px rgba(183,110,121,0.25);
-            margin-bottom: 40px;
-        }
-
-        .presence-text { font-family: 'Cinzel', serif; font-size: 1.1rem; color: #fcf3b8; letter-spacing: 2px; text-transform: uppercase; }
-        .family-signpost { font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.2rem; color: #8a1426; margin-bottom: 25px; text-align: center; }
-        .family-signpost span { font-family: 'Montserrat', sans-serif; font-style: normal; font-size: 0.95rem; display: block; text-transform: uppercase; letter-spacing: 3px; color: #666; margin-bottom: 5px;}
-
-        .family-card {
-            background: #ffffff;
-            border-left: 4px solid #8a1426;
-            box-shadow: 0 6px 18px rgba(138,20,38,0.05);
-            width: 90%;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .family-title { font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700; color: #8a1426; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid #f5efe4; padding-bottom: 5px; text-transform: uppercase;}
-        .family-member { font-size: 1rem; color: #4a4a4a; line-height: 1.7; font-weight: 400; }
-
-        /* --- SECTION 5: MAP INTERACTION --- */
-        #section-map { background: #fff; text-align: center; padding: 50px 20px; }
-        .map-icon { color: #8a1426; animation: bounce 2s infinite; margin-bottom: 8px; }
-        .map-title { font-family: 'Cinzel', serif; font-size: 1.3rem; color: #8a1426; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-        .venue-name { font-size: 1rem; color: #d4af37; font-weight: 600; margin-bottom: 20px; font-family: 'Cinzel', serif; letter-spacing: 1px; }
-        
-        .map-embed-wrapper {
-            width: 100%; height: 200px; border-radius: 12px; overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 3px solid #fff; outline: 1px solid #e0d5c1; margin-bottom: 20px;
-        }
-        .static-map-trigger { width: 100%; height: 100%; display: flex; background: #e5e3df; }
-        .directions-btn {
-            display: inline-flex; align-items: center; background: #8a1426; color: #ffffff; text-decoration: none;
-            padding: 12px 35px; border-radius: 30px; font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
-        }
-
-        /* --- FOOTER COMPONENT --- */
-        footer { background: #140d0e; color: #fff; text-align: center; padding: 40px 20px; }
-        .footer-names { font-family: 'Great Vibes', cursive; font-size: 2.3rem; color: #e5c1a7; margin-bottom: 5px; }
-        .hashtag { font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 2px; color: #d4af37; font-weight: 500; }
-
-        /* --- VIDEO-STYLE SCROLL REVEAL ANIMATIONS --- */
-        .scroll-reveal {
+        /* Reveal states for text overlay components */
+        .reveal-item {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1.4s cubic-bezier(0.215, 0.61, 0.355, 1), transform 1.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .scroll-reveal.revealed { opacity: 1; transform: translateY(0); }
 
-        /* Sequence timing delays for text lines on loading elements */
-        .delay-1 { transition-delay: 0.3s; }
-        .delay-2 { transition-delay: 0.7s; }
-        .delay-3 { transition-delay: 1.1s; }
+        .reveal-item.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        /* --- BASE KEYFRAMES --- */
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.08); } 40% { transform: scale(1); } 60% { transform: scale(1.12); } }
-        @keyframes softPulse { 0% { opacity: 0.85; transform: translateX(-50%) scale(0.97); } 100% { opacity: 1; transform: translateX(-50%) scale(1.03); } }
-        @keyframes bellSwayLeft { 0%, 100% { transform: rotate(7deg); } 50% { transform: rotate(-7deg); } }
-        @keyframes bellSwayRight { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(9deg); } }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } 60% { transform: translateY(-4px); } }
+        /* Timing Delays for fluid sequential loading */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-500 { transition-delay: 500ms; }
+
+        /* Metallic Rose Gold Placard Base Styling */
+        .glittery-rose-gold {
+            background: linear-gradient(135deg, #e0a3ad 0%, #f9dce2 25%, #b2737c 50%, #f5cbd2 75%, #ca8a94 100%);
+            background-size: 200% 200%;
+            animation: shimmeryGlow 6s infinite ease-in-out;
+        }
+
+        /* Luxurious Glittering Gold Text Base */
+        .glittery-gold-text {
+            background: linear-gradient(135deg, #eed083 0%, #fbf5b7 30%, #d4af37 50%, #fbf5b7 70%, #aa771c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shimmeryGlow 4s linear infinite;
+        }
+
+        @keyframes shimmeryGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Sparkle reflection animation elements */
+        .glitter-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .glitter-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -60%; width: 30%; height: 200%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(30deg);
+            transition: none;
+            animation: shinySweep 4.5s infinite ease-in-out;
+        }
+        @keyframes shinySweep {
+            0% { left: -60%; }
+            30%, 100% { left: 140%; }
+        }
+
+        /* Glowing particles behind golden elements */
+        .sparkle-dot {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: twinkle 1.5s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { transform: scale(0.3); opacity: 0.1; }
+            100% { transform: scale(1.1); opacity: 0.9; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- DEVICE CONTAINER WRAPPER -->
-    <div class="phone-wrapper">
+    <div class="desktop-frame-wrapper">
 
-        <!-- INTERACTIVE DOOR SPLASH ENVELOPE -->
+        <!-- LOCKING SPLIT DOOR ENTRYWAY -->
         <div id="gate-container">
-            <div class="gate-header-text">YOU'RE INVITED</div>
             <div class="door-half door-left"></div>
             <div class="door-half door-right"></div>
             
-            <div class="unlock-assembly">
-                <button class="heart-btn" onclick="openInvitation()" aria-label="Open Invitation">
-                    <svg viewBox="0 0 32 32"><path d="M16 28.5s-12-7.31-12-14.5C4 9.13 7.82 5 12.5 5c2.9 0 5.48 1.57 6.94 4 1.46-2.43 4.04-4 6.94-4C30.93 5 34 9.13 34 14c0 7.19-12 14.5-12 14.5z"/></svg>
-                </button>
-                <div class="tap-instruction">Tap to open your invitation</div>
+            <!-- Static Text Layer over Doors -->
+            <div class="gate-ui-layer absolute inset-0 flex flex-col justify-between items-center py-20 px-6 z-20 transition-all duration-700">
+                <div class="text-center">
+                    <span class="block font-serifHeading text-2xl tracking-[6px] text-[#8a1426] font-bold drop-shadow-md">YOU'RE INVITED</span>
+                    <div class="w-16 h-[1.5px] bg-[#8a1426] mx-auto mt-3 opacity-60"></div>
+                </div>
+
+                <div class="text-center flex flex-col items-center">
+                    <!-- Heart Circle Unlock Button -->
+                    <button onclick="triggerGateOpen()" class="w-[75px] h-[75px] bg-white rounded-full flex justify-center items-center shadow-2xl border border-rose-100 hover:scale-105 active:scale-95 transition-transform duration-200" aria-label="Unlock Webpage">
+                        <svg class="w-9 h-9 fill-[#c92a3b] animate-[bounce_1.8s_infinite]" viewBox="0 0 32 32">
+                            <path d="M16 28.5s-12-7.31-12-14.5C4 9.13 7.82 5 12.5 5c2.9 0 5.48 1.57 6.94 4 1.46-2.43 4.04-4 6.94-4C30.93 5 34 9.13 34 14c0 7.19-12 14.5-12 14.5z"/>
+                        </svg>
+                    </button>
+                    <span class="block mt-6 font-serifHeading text-[0.8rem] text-white tracking-[3px] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">Tap to open your invitation</span>
+                </div>
             </div>
         </div>
 
-        <!-- MAIN SCROLLABLE CONTINUOUS INVITATION TEXTURED PAGES -->
+        <!-- SCROLLABLE SECTIONS -->
         <div id="main-content">
             
-            <!-- SECTION 1: AUSPICIOUS WEDDING PAGE -->
-            <section class="invitation-section" id="section-page1">
-                <!-- Clean Color Blocker Overlays covering native static card text -->
-                <div class="mask-p1-parents"></div>
-                <div class="mask-p1-names"></div>
-                <div class="mask-p1-details"></div>
-                <div class="mask-p1-fire"></div>
-
-                <!-- Cinematic Dynamic Fluid Text Layout Engine -->
-                <div class="p1-text-parents scroll-reveal delay-1">
-                    With the blessings of Lord Ganesha<br>
-                    <strong>Mrs. Preeti Jain & Mr. Dheeraj Jain</strong><br>
-                    cordially invite you to the auspicious wedding of their children
-                </div>
-
-                <div class="p1-text-names scroll-reveal delay-2">
-                    Dhriti <br><span style="font-family:'Playfair Display'; font-style:italic; font-size:1.8rem; color:#666;">weds</span><br> Hemant
-                </div>
-
-                <div class="p1-text-details scroll-reveal delay-3">
-                    <h3>WEDDING</h3>
-                    <p>Nirvana, Ludhiana</p>
-                    <p style="color:#d4af37; margin-top:4px;">9:00 PM Onwards</p>
-                </div>
-
-                <!-- Programmatic Smooth Floating Flame System Layer -->
-                <div class="fire-animator-overlay">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                        <path d="M50,90 Q35,60 50,20 Q65,60 50,90 Z" fill="#ff6200">
-                            <animate attributeName="d" dur="1.2s" repeatCount="indefinite"
-                                values="M50,90 Q35,60 50,20 Q65,60 50,90 Z;
-                                        M50,90 Q28,55 50,12 Q72,55 50,90 Z;
-                                        M50,90 Q35,60 50,20 Q65,60 50,90 Z" />
-                            <animate attributeName="fill" dur="1.8s" repeatCount="indefinite" values="#ff6200;#ff3300;#ff9900;#ff6200"/>
-                        </path>
-                        <path d="M50,85 Q41,65 50,38 Q59,65 50,85 Z" fill="#ffcc00">
-                            <animate attributeName="d" dur="0.9s" repeatCount="indefinite"
-                                values="M50,85 Q41,65 50,38 Q59,65 50,85 Z;
-                                        M50,85 Q33,62 50,28 Q67,62 50,85 Z;
-                                        M50,85 Q41,65 50,38 Q59,65 50,85 Z" />
-                        </path>
-                    </svg>
-                </div>
+            <!-- SECTION 1: DYNAMIC AUTOPLAY VIDEO PAGE -->
+            <section class="invitation-section bg-black flex items-center justify-center min-h-screen">
+                <video id="invitation-video" class="w-full h-full object-cover" muted playsinline>
+                    <source src="video 1.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video formats.
+                </video>
             </section>
 
-            <!-- SECTION 2: GLITTER SCRATCH COATING REVEAL & COUNTDOWN -->
-            <section class="invitation-section" id="section-scratch">
-                <div class="announcement-text scroll-reveal">With immense joy and love<br>Dhriti & Hemant</div>
-                
-                <div class="scratch-wrapper scroll-reveal">
-                    <div class="scratch-underlayer">
-                        <div class="revealed-date">11TH JULY</div>
-                        <div class="revealed-year">2026</div>
+            <!-- --- STREAMING_CHUNK: Styling the Date scratch card container... --- -->
+            <!-- SECTION 2: ANNOUNCEMENT & SCRATCH DATE COATING -->
+            <section class="invitation-section bg-[#fffdf9] py-14 px-6 border-b-2 border-dashed border-[#e6dec9]" id="section-date-reveal">
+                <div class="text-center w-full">
+                    <span class="reveal-item block font-classicSerif text-lg text-gray-500 uppercase tracking-[3px] mb-2 font-medium">With immense joy and love</span>
+                    <h2 class="reveal-item block font-cursive text-5xl md:text-6xl text-[#8a1426] mb-8">Dhriti & Hemant</h2>
+                    
+                    <!-- Glittery Interactive Canvas Box -->
+                    <div class="reveal-item relative w-[310px] h-[140px] mx-auto rounded-xl overflow-hidden shadow-xl border-2 border-amber-200">
+                        <!-- Date revealed layout underneath (No extra location label, only the Date) -->
+                        <div class="scratch-underlayer absolute inset-0 bg-[#fffcf5] flex flex-col justify-center items-center border-4 border-double border-amber-500 rounded-xl z-10">
+                            <span class="font-serifHeading text-3xl font-extrabold text-[#8a1426] tracking-wider">11TH JULY 2026</span>
+                        </div>
+                        
+                        <!-- Scratch off overlay canvas -->
+                        <canvas id="scratch-canvas" width="310" height="140" class="absolute inset-0 z-20 cursor-pointer touch-none"></canvas>
                     </div>
-                    <canvas id="scratch-canvas" width="320" height="150"></canvas>
-                </div>
-                
-                <div id="countdown-container">
-                    <div class="timer-box"><span class="timer-val" id="days">00</span><span class="timer-label">Days</span></div>
-                    <div class="timer-box"><span class="timer-val" id="hours">00</span><span class="timer-label">Hrs</span></div>
-                    <div class="timer-box"><span class="timer-val" id="minutes">00</span><span class="timer-label">Min</span></div>
-                    <div class="timer-box"><span class="timer-val" id="seconds">00</span><span class="timer-label">Sec</span></div>
+
+                    <!-- Realtime live countdown revealed post-scratch -->
+                    <div id="countdown-wrapper" class="mt-12 transition-all duration-1000 transform translate-y-10 opacity-0">
+                        <div class="flex justify-center gap-3">
+                            <div class="bg-[#8a1426] text-white min-w-[64px] py-3 rounded-lg shadow-md">
+                                <span class="block font-serifHeading text-lg font-bold" id="days">00</span>
+                                <span class="block text-[0.6rem] uppercase tracking-[1px] font-body text-rose-200 mt-1">Days</span>
+                            </div>
+                            <div class="bg-[#8a1426] text-white min-w-[64px] py-3 rounded-lg shadow-md">
+                                <span class="block font-serifHeading text-lg font-bold" id="hours">00</span>
+                                <span class="block text-[0.6rem] uppercase tracking-[1px] font-body text-rose-200 mt-1">Hours</span>
+                            </div>
+                            <div class="bg-[#8a1426] text-white min-w-[64px] py-3 rounded-lg shadow-md">
+                                <span class="block font-serifHeading text-lg font-bold" id="minutes">00</span>
+                                <span class="block text-[0.6rem] uppercase tracking-[1px] font-body text-rose-200 mt-1">Min</span>
+                            </div>
+                            <div class="bg-[#8a1426] text-white min-w-[64px] py-3 rounded-lg shadow-md">
+                                <span class="block font-serifHeading text-lg font-bold" id="seconds">00</span>
+                                <span class="block text-[0.6rem] uppercase tracking-[1px] font-body text-rose-200 mt-1">Sec</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <!-- SECTION 3: CELEBRATORY HALDI PAGE -->
-            <section class="invitation-section" id="section-haldi">
-                <div class="mask-haldi-names"></div>
-                
-                <!-- Code text animation replacement overlay -->
-                <div class="haldi-text-names scroll-reveal">Dhriti & Hemant</div>
+            <!-- SECTION 3: HALDI CEREMONY GRAPHIC WRAPPER -->
+            <section class="invitation-section relative justify-start" style="background-image: url('haldi.PNG');">
+                <!-- Sky-Colored Blank Text Zone Overlay -->
+                <div class="w-[85%] text-center mt-[12%] px-4 z-10 flex flex-col items-center">
+                    <h2 class="reveal-item font-cursive text-6xl text-[#d25400] mb-2 drop-shadow-sm">Haldi</h2>
+                    
+                    <div class="reveal-item w-24 h-[1.5px] bg-[#d25400] mb-4 opacity-50"></div>
+                    
+                    <div class="reveal-item font-classicSerif text-[1.1rem] text-[#3e271a] italic tracking-wide font-semibold mb-3">
+                        Welcome to the Yellow Carnival
+                    </div>
+                    
+                    <div class="reveal-item flex flex-col gap-1 font-body text-[0.85rem] text-[#553b1b] font-medium leading-relaxed">
+                        <p class="font-bold text-base text-[#924203]">10th July 2026, Friday</p>
+                        <p class="tracking-[1px]">12:00 PM onwards</p>
+                        <p class="font-bold tracking-[1px] mt-0.5">Nirwana, Ludhiana</p>
+                    </div>
 
-                <!-- Animated Interactive Swing Hanging Bells -->
-                <div class="bell-animation-overlay bell-left">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M50,15 L50,30 M30,70 C30,40 70,40 70,70 L25,70 L30,70 Z" fill="#d4af37" stroke="#9e7d11" stroke-width="1.5"/><circle cx="50" cy="75" r="5" fill="#8a1426" /></svg>
-                </div>
-                <div class="bell-animation-overlay bell-right">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M50,15 L50,30 M30,70 C30,40 70,40 70,70 L25,70 L30,70 Z" fill="#d4af37" stroke="#9e7d11" stroke-width="1.5"/><circle cx="48" cy="75" r="5" fill="#8a1426" /></svg>
-                </div>
-            </section>
-
-            <!-- SECTION 4: PLACARDS DIRECTORY -->
-            <section class="invitation-section" id="section-families">
-                <div class="presence-placard scroll-reveal">
-                    <div class="presence-text">Awaiting your noble presence</div>
-                </div>
-                
-                <div class="family-signpost scroll-reveal"><span>With Love,</span>The Families</div>
-                
-                <div class="family-card scroll-reveal">
-                    <div class="family-title">Groom's Family</div>
-                    <div class="family-member"><strong>Mrs. Preeti Jain</strong></div>
-                    <div class="family-member">Mr. Puneet Jain</div>
-                </div>
-                
-                <div class="family-card scroll-reveal">
-                    <div class="family-title">Bride's Family</div>
-                    <div class="family-member"><strong>Mrs. Preeti Jain</strong></div>
-                    <div class="family-member">Mr. Dheeraj Jain</div>
-                </div>
-            </section>
-
-            <!-- SECTION 5: ROUTING SCHEMATIC & MAP DIRECTIONS LINK -->
-            <section class="invitation-section" id="section-map">
-                <div class="map-icon scroll-reveal">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                </div>
-                <div class="map-title scroll-reveal">Where we celebrate</div>
-                <div class="venue-name scroll-reveal">Stallone Manor Resort, Ludhiana</div>
-                
-                <div class="map-embed-wrapper scroll-reveal">
-                    <a href="https://www.google.com/maps/dir//Stallone+Manor+Resort,+Pakhowal+Rd,+Thakkarwal,+Ludhiana,+Punjab+142022/@28.6425088,77.2964352,13z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a81e54b544107:0xd5cfb4a61b21e00f!2m2!1d75.795248!2d30.8496305?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D" class="static-map-trigger" target="_blank">
-                        <svg width="100%" height="100%" viewBox="0 0 300 200" style="background:#e4e2de;">
-                            <path d="M0,40 L300,70 M0,150 L300,120 M100,0 L120,200 M220,0 L180,200" stroke="#fff" stroke-width="7" fill="none"/>
-                            <path d="M0,40 L300,70 M0,150 L300,120 M100,0 L120,200 M220,0 L180,200" stroke="#cdca97" stroke-width="1.5" fill="none"/>
-                            <circle cx="150" cy="95" r="40" fill="#8a1426" fill-opacity="0.12" stroke="#8a1426" stroke-width="1" stroke-dasharray="4,4"/>
-                            <path d="M150,78 C143,78 137,84 137,91 C137,100 150,112 150,112 C150,112 163,100 163,91 C163,84 157,78 150,78 Z" fill="#8a1426"/>
-                            <circle cx="150" cy="89" r="3.5" fill="#fff"/>
-                        </svg>
+                    <a href="https://www.google.com/maps/dir//NIRVANA+Luxury+Hotel+I+Ludhiana,+Main+Hambran+Rd,+Pratap+Singh+Wala,+Ludhiana,+Punjab+141008/@28.7113216,77.103104,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a81e54b544107:0xb94593736b0321ec!2m2!1d75.7789362!2d30.9187453?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D" 
+                       target="_blank" 
+                       class="reveal-item mt-4 inline-flex items-center gap-1 text-[0.75rem] font-serifHeading font-bold text-[#b45309] tracking-[2px] uppercase border-b border-[#b45309] pb-0.5 hover:text-[#78350f] transition-colors duration-200">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        Get directions
                     </a>
                 </div>
-                
-                <a href="https://www.google.com/maps/dir//Stallone+Manor+Resort,+Pakhowal+Rd,+Thakkarwal,+Ludhiana,+Punjab+142022/@28.6425088,77.2964352,13z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a81e54b544107:0xd5cfb4a61b21e00f!2m2!1d75.795248!2d30.8496305?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D" class="directions-btn scroll-reveal" target="_blank">
-                    Get Directions
-                </a>
             </section>
 
-            <!-- FOOTER IDENTITY AND BRAND METADATA -->
-            <footer>
-                <div class="footer-names">Dhriti & Hemant ❤️✨</div>
-                <div class="hashtag">#DhritiHeManzil</div>
+            <!-- --- STREAMING_CHUNK: Aligning the Sangeet starry theme overlays... --- -->
+            <!-- SECTION 4: SANGEET GRAPHIC WRAPPER -->
+            <section class="invitation-section relative justify-start" style="background-image: url('sangeet.png');">
+                <!-- Dark Blue Blank Text Zone Overlay - Positioned specifically in the middle right side of the page -->
+                <div class="absolute right-[5%] top-1/2 -translate-y-1/2 w-[55%] text-center z-10 flex flex-col items-center">
+                    <h2 class="reveal-item font-cursive text-5xl text-[#f3ebdf] mb-2 drop-shadow-md">Sangeet</h2>
+                    
+                    <div class="reveal-item w-16 h-[1.5px] bg-[#d4af37] mb-3 opacity-50"></div>
+                    
+                    <div class="reveal-item font-classicSerif text-[0.9rem] text-stone-200 italic tracking-wide font-medium mb-3 leading-relaxed drop-shadow-sm">
+                        A playful night of Sangeet and Cultural festivities
+                    </div>
+                    
+                    <div class="reveal-item flex flex-col gap-1 font-body text-[0.75rem] text-stone-300 tracking-[0.5px] leading-relaxed drop-shadow">
+                        <p class="font-bold text-[0.85rem] text-[#e5c1a7]">10th July 2026, Friday</p>
+                        <p class="opacity-90">07:00 PM onwards</p>
+                        <p class="font-bold opacity-95 mt-0.5">Nirwana, Ludhiana</p>
+                    </div>
+
+                    <a href="https://www.google.com/maps/dir/28.7885282,77.1178669/NIRVANA+Luxury+Hotel+I+Ludhiana,+Main+Hambran+Rd,+Pratap+Singh+Wala,+Ludhiana,+Punjab+141008/@28.7113216,77.103104,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x391a81e54b544107:0xb94593736b0321ec!2m2!1d75.7789362!2d30.9187453?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D" 
+                       target="_blank" 
+                       class="reveal-item mt-4 inline-flex items-center gap-1 text-[0.7rem] font-serifHeading font-bold text-[#e5c1a7] tracking-[2px] uppercase border-b border-[#e5c1a7] pb-0.5 hover:text-white transition-colors duration-200 drop-shadow">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                        Get directions
+                    </a>
+                </div>
+            </section>
+
+            <!-- --- STREAMING_CHUNK: Generating rose gold parent placard cards... --- -->
+            <!-- SECTION 5: FAMILY RECEPTION PLACARD & ATTENDANCE RECORD -->
+            <section class="invitation-section bg-[#fbfaf6] py-16 px-6 flex flex-col justify-center items-center">
+                <!-- Glittery Rose Gold Placard Card -->
+                <div class="reveal-item glittery-rose-gold glitter-shine w-full max-w-[340px] rounded-2xl p-8 text-center shadow-xl border border-rose-100 mb-14">
+                    <span class="glittery-gold-text block font-serifHeading text-lg md:text-xl font-bold tracking-[4px] uppercase leading-relaxed">
+                        Awaiting your noble presence
+                    </span>
+                </div>
+
+                <!-- With Love, The Families -->
+                <div class="text-center">
+                    <span class="reveal-item block font-classicSerif text-xl italic text-gray-500 mb-1">With Love,</span>
+                    <h3 class="reveal-item block font-cursive text-5xl text-[#8a1426] mb-12">The Families</h3>
+                </div>
+
+                <div class="w-full max-w-[340px] flex flex-col gap-8">
+                    <!-- Groom Card -->
+                    <div class="reveal-item bg-white p-6 rounded-xl shadow-md border-l-4 border-amber-400">
+                        <h4 class="font-serifHeading text-lg text-[#8a1426] font-bold tracking-[2px] uppercase border-b pb-2 mb-3">Groom's family</h4>
+                        <div class="font-body text-[0.95rem] text-gray-700 space-y-1 font-medium">
+                            <p>Mrs. Preeti Jain</p>
+                            <p>Mr. Puneet Jain</p>
+                        </div>
+                    </div>
+
+                    <!-- Bride Card -->
+                    <div class="reveal-item bg-white p-6 rounded-xl shadow-md border-l-4 border-rose-400">
+                        <h4 class="font-serifHeading text-lg text-[#8a1426] font-bold tracking-[2px] uppercase border-b pb-2 mb-3">Bride's family</h4>
+                        <div class="font-body text-[0.95rem] text-gray-700 space-y-1 font-medium">
+                            <p>Mrs. Preeti Jain</p>
+                            <p>Mr. Dheeraj Jain</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FOOTER COMPONENT -->
+            <footer class="bg-[#0e0809] py-16 px-6 text-center border-t border-[#1f1315]">
+                <h4 class="font-cursive text-4xl text-[#eed083] mb-4">Dhriti & Hemant ❤️</h4>
+                <p class="font-serifHeading text-3xl md:text-4xl tracking-[4px] text-[#eed083] uppercase font-bold mt-2">#DhritiHeManzil</p>
+                <div class="w-16 h-[1px] bg-[#eed083] mx-auto mt-6 opacity-30"></div>
+                <span class="block mt-4 text-[0.65rem] uppercase tracking-[2px] font-body text-gray-500">Made with love • 2026</span>
             </footer>
 
         </div>
     </div>
 
-    <!-- MAIN OPERATIONAL ENGINE -->
+    <!-- --- STREAMING_CHUNK: Compiling JS controller lifecycle... --- -->
+    <!-- Core Script Engines -->
     <script>
-        function openInvitation() {
-            const container = document.getElementById('gate-container');
-            container.classList.add('gate-opened');
+        // Doors Open Action triggers auto video playing
+        function triggerGateOpen() {
+            const gate = document.getElementById('gate-container');
+            gate.classList.add('gate-opened');
+            
+            // Activate continuous content flow opacity immediately
             document.body.classList.add('content-active');
             
+            // Autoplay the video
+            const video = document.getElementById('invitation-video');
+            if (video) {
+                video.play().catch(error => {
+                    console.log("Video autoplay prevented by browser policies. Triggering playback on touch input.");
+                });
+            }
+
+            // Remove gate doors from layout context after motion finishes to prevent viewport scroll barriers
             setTimeout(() => {
-                container.style.display = 'none';
+                gate.style.display = 'none';
+                // Trigger viewport element scrolling metrics manually on layout completion
                 handleScrollReveal();
-            }, 1800);
+            }, 2200);
         }
 
+        // --- SCRATCH TO REVEAL ENGINE ---
         const canvas = document.getElementById('scratch-canvas');
         const ctx = canvas.getContext('2d');
         let isDrawing = false;
-        let scratchCounted = false;
+        let isScratchedCompleted = false;
 
-        function initScratchCanvas() {
-            const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            grad.addColorStop(0, '#bf953f'); grad.addColorStop(0.25, '#fcf6ba'); grad.addColorStop(0.5, '#b38728'); grad.addColorStop(0.75, '#fbf5b7'); grad.addColorStop(1, '#aa771c');
+        function buildScratchTexture() {
+            // Fill background with a custom metallic golden brush pattern representing glitter
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#bf953f');
+            gradient.addColorStop(0.25, '#fcf6ba');
+            gradient.addColorStop(0.5, '#b38728');
+            gradient.addColorStop(0.75, '#fbf5b7');
+            gradient.addColorStop(1, '#aa771c');
             
-            ctx.fillStyle = grad;
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = "bold 13px 'Cinzel', serif"; ctx.fillStyle = "#5c4314"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-            ctx.fillText("SCRATCH HERE TO REVEAL DATE", canvas.width / 2, canvas.height / 2);
+
+            // Draw extra shimmering particles on canvas overlay
+            for (let i = 0; i < 400; i++) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.45})`;
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2 + 1, Math.random() * 2 + 1);
+            }
+
+            ctx.font = "bold 13px 'Cinzel', sans-serif";
+            ctx.fillStyle = "#634710";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("SCRATCH HERE TO REVEAL", canvas.width / 2, canvas.height / 2);
         }
 
-        function scratch(x, y) {
+        function scratchPaint(x, y) {
             ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath(); ctx.arc(x, y, 22, 0, Math.PI * 2); ctx.fill();
-            if (!scratchCounted) checkScratchPercentage();
-        }
-
-        function checkScratchPercentage() {
-            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const pixels = imgData.data; let cleared = 0;
-            for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) cleared++; }
-            if (cleared / (pixels.length / 4) > 0.45) {
-                scratchCounted = true;
-                canvas.style.transition = "opacity 0.8s ease"; canvas.style.opacity = 0;
-                setTimeout(() => canvas.remove(), 800);
-                document.getElementById('countdown-container').classList.add('visible');
+            ctx.beginPath();
+            ctx.arc(x, y, 22, 0, Math.PI * 2);
+            ctx.fill();
+            
+            if (!isScratchedCompleted) {
+                calculateScratchCompletion();
             }
         }
 
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e.offsetX, e.offsetY); });
-        canvas.addEventListener('mousemove', (e) => { if (isDrawing) scratch(e.offsetX, e.offsetY); });
+        function calculateScratchCompletion() {
+            const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            let clearedCount = 0;
+            
+            // Analyze the transparency channel to count cleared coordinates
+            for (let i = 3; i < pixels.length; i += 4) {
+                if (pixels[i] === 0) clearedCount++;
+            }
+            
+            // Complete reveal on 45% scratch coverage
+            if (clearedCount / (pixels.length / 4) > 0.45) {
+                isScratchedCompleted = true;
+                canvas.style.transition = 'opacity 0.8s ease-out';
+                canvas.style.opacity = '0';
+                
+                // Show countdown block elegantly
+                const countdown = document.getElementById('countdown-wrapper');
+                countdown.classList.remove('opacity-0', 'translate-y-10');
+                
+                setTimeout(() => {
+                    canvas.remove();
+                }, 850);
+            }
+        }
+
+        // Pointer event mappings for Desktop and Mobile Scratch compatibility
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratchPaint(e.offsetX, e.offsetY); });
+        canvas.addEventListener('mousemove', (e) => { if (isDrawing) scratchPaint(e.offsetX, e.offsetY); });
         window.addEventListener('mouseup', () => isDrawing = false);
-        canvas.addEventListener('touchstart', (e) => { isDrawing = true; const rect = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top); });
-        canvas.addEventListener('touchmove', (e) => { if (!isDrawing) return; e.preventDefault(); const rect = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top); });
+
+        canvas.addEventListener('touchstart', (e) => {
+            isDrawing = true;
+            const bbox = canvas.getBoundingClientRect();
+            scratchPaint(e.touches[0].clientX - bbox.left, e.touches[0].clientY - bbox.top);
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const bbox = canvas.getBoundingClientRect();
+            scratchPaint(e.touches[0].clientX - bbox.left, e.touches[0].clientY - bbox.top);
+        });
         window.addEventListener('touchend', () => isDrawing = false);
 
-        const targetWeddingDate = new Date("July 11, 2026 00:00:00").getTime();
+        // --- COUNTDOWN MECHANICS ---
+        const eventDate = new Date("July 11, 2026 00:00:00").getTime();
 
-        function runCountdownTimer() {
-            const now = new Date().getTime();
-            const difference = targetWeddingDate - now;
-            if (difference < 0) {
-                document.getElementById('countdown-container').innerHTML = "<div class='revealed-date'>The Big Day is Here!</div>";
+        function syncCountdown() {
+            const currentTime = new Date().getTime();
+            const distance = eventDate - currentTime;
+
+            if (distance < 0) {
+                document.getElementById('countdown-wrapper').innerHTML = `<span class="block font-serifHeading text-[#8a1426] tracking-widest text-lg font-bold">THE CELEBRATION CONTINUES!</span>`;
                 return;
             }
-            const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((difference % (1000 * 60)) / 1000);
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
 
             document.getElementById('days').innerText = d < 10 ? '0' + d : d;
             document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
@@ -584,20 +527,51 @@
             document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
         }
 
-        const revealElements = document.querySelectorAll('.scroll-reveal');
+        // --- INTERSECTION MONITORING FOR GRACEFUL REVEALS ---
+        const scrollElements = document.querySelectorAll('.reveal-item');
+
         function handleScrollReveal() {
-            const triggerBottom = window.innerHeight * 0.9;
-            revealElements.forEach(el => {
-                const elTop = el.getBoundingClientRect().top;
-                if (elTop < triggerBottom) el.classList.add('revealed');
+            const triggerOffset = window.innerHeight * 0.90;
+            
+            scrollElements.forEach(item => {
+                const elementTop = item.getBoundingClientRect().top;
+                if (elementTop < triggerOffset) {
+                    item.classList.add('revealed');
+                }
             });
         }
 
+        // --- Handling Video Auto-Pause on Scroll & Play Once ---
+        const videoElement = document.getElementById('invitation-video');
+
+        // Play exactly once, then pause at the final frame
+        videoElement.addEventListener('ended', () => {
+            videoElement.pause();
+            console.log("Video played once and paused on the final frame.");
+        });
+
+        // Intersection Observer to pause the video when scrolled out of view and resume when back in view
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Only resume if it hasn't reached the end yet
+                    if (videoElement.currentTime < videoElement.duration) {
+                        videoElement.play().catch(err => console.log("Video playback waiting for tap."));
+                    }
+                } else {
+                    videoElement.pause();
+                }
+            });
+        }, { threshold: 0.25 });
+
+        // Event Initializer Listeners
         window.addEventListener('scroll', handleScrollReveal);
         window.addEventListener('DOMContentLoaded', () => {
-            initScratchCanvas();
-            setInterval(runCountdownTimer, 1000);
-            runCountdownTimer();
+            buildScratchTexture();
+            setInterval(syncCountdown, 1000);
+            syncCountdown();
+            handleScrollReveal();
+            videoObserver.observe(videoElement);
         });
     </script>
 </body>
